@@ -47,7 +47,11 @@ fun App() = singleWindowApplication(
             disabledIndicatorColor = Color.Transparent,
         ),
         placeholder = { Text(text = "textbox") },
-        onValueChange = { textFieldString = it },
+        onValueChange = {
+            textFieldString = it
+            //val memos = convertToMemos(it) //memos動作確認用
+            //println(memos)
+                        },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
             autoCorrect = true,
