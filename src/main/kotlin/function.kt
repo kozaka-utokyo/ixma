@@ -1,21 +1,15 @@
-import io.ktor.client.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
-import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.client.HttpClient
 import io.ktor.client.features.json.*
 import io.ktor.client.features.json.serializer.*
 import kotlinx.serialization.Serializable
-import io.ktor.client.features.*
 import io.ktor.client.features.logging.*
 import io.ktor.client.request.forms.*
-import io.ktor.http.content.*
-import io.ktor.utils.io.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
 import java.io.File
-import io.ktor.utils.io.ByteReadChannel
 
 // 数字かどうか判定
 fun isNumeric(s: String): Boolean {
