@@ -8,4 +8,9 @@ data class Page(
     fun restore(){
         //TODO
     }
+
+    fun plainValue(): String {
+        val texts:List<String> = this.lines.map { it.value }
+        return texts.joinToString(separator = "\n")
+    }
 }
