@@ -134,48 +134,44 @@ suspend fun gpt() {
     println(response)
 }
 
-fun whisper() = runBlocking {
-    val client = HttpClient(CIO) {
-        install(JsonFeature) {
-            serializer = KotlinxSerializer()
-        }
-        install(Logging) {
-            logger = Logger.DEFAULT
-            level = LogLevel.ALL
-        }
-    }
+//fun whisper() = runBlocking {
+//    val client = HttpClient(CIO) {
+//        install(JsonFeature) {
+//            serializer = KotlinxSerializer()
+//        }
+//        install(Logging) {
+//            logger = Logger.DEFAULT
+//            level = LogLevel.ALL
+//        }
+//    }
+//
+//    val file = File("test.mp3")
+//    val apiKey = readApiKeyFromFile("api_key.txt") // APIキーをファイルから読み込む
+//
+//    val response = client.submitForm<String> {
+//        url("https://api.openai.com/v1/audio/transcriptions")
+//        method = HttpMethod.Post
+//
+//        headers {
+//            append("Authorization", "Bearer $apiKey") // 読み込んだAPIキーを使用する
+//        }
+//
+//        body = MultiPartFormDataContent(formData {
+//            appendInput(
+//                key = "file",
+//                headers = Headers.build {
+//                    append(HttpHeaders.ContentDisposition, "filename=test.mp3")
+//                    append(HttpHeaders.ContentType, "audio/mpeg")
+//                }
+//            ) {
+//                ByteReadPacket(file.readBytes())
+//            }
+//            append("model", "whisper-1")
+//        })
+//    }
+//    println(response)
+//}
 
-    val file = File("test.mp3")
-    val apiKey = readApiKeyFromFile("api_key.txt") // APIキーをファイルから読み込む
-
-    val response = client.submitForm<String> {
-        url("https://api.openai.com/v1/audio/transcriptions")
-        method = HttpMethod.Post
-
-        headers {
-            append("Authorization", "Bearer $apiKey") // 読み込んだAPIキーを使用する
-        }
-
-        body = MultiPartFormDataContent(formData {
-            appendInput(
-                key = "file",
-                headers = Headers.build {
-                    append(HttpHeaders.ContentDisposition, "filename=test.mp3")
-                    append(HttpHeaders.ContentType, "audio/mpeg")
-                }
-            ) {
-                ByteReadPacket(file.readBytes())
-            }
-            append("model", "whisper-1")
-        })
-    }
-    println(response)
-}
-fun readApiKeyFromFile(filename: String): String {
-    return File(filename).readText().trim()
-}
-
-suspend fun main(){
-    gpt()
+//suspend fun main(){
 //    whisper()
-}
+//}

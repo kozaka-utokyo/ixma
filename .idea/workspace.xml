@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="add adm_fs">
+    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="whisper and gpt">
+      <change afterPath="$PROJECT_DIR$/src/main/kotlin/recorder.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/function.kt" afterDir="false" />
     </list>
@@ -83,7 +85,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;#005__kozaka__whisper&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma/src/main/kotlin&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -94,15 +96,15 @@
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Takao1061\Desktop\ixma" />
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
+      <recent name="C:\Users\Takao1061\Desktop\ixma" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Takao1061\Desktop\ixma" />
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.FunctionKt">
+  <component name="RunManager">
     <configuration name="PageTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -200,7 +202,12 @@
       <workItem from="1693644343749" duration="280000" />
       <workItem from="1693644659658" duration="666000" />
       <workItem from="1693645369708" duration="1000000" />
-      <workItem from="1693646961917" duration="607000" />
+      <workItem from="1693646961917" duration="964000" />
+      <workItem from="1693650171532" duration="4000" />
+      <workItem from="1693685296554" duration="377000" />
+      <workItem from="1693984496066" duration="2464000" />
+      <workItem from="1693995048523" duration="1822000" />
+      <workItem from="1694089495440" duration="831000" />
     </task>
     <task id="LOCAL-00001" summary="add main-f">
       <option name="closed" value="true" />
@@ -234,7 +241,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693647130454</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="whisper and gpt">
+      <option name="closed" value="true" />
+      <created>1693647611249</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1693647611249</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -243,6 +258,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add main-f" />
     <MESSAGE value="add adm_fs" />
-    <option name="LAST_COMMIT_MESSAGE" value="add adm_fs" />
+    <MESSAGE value="whisper and gpt" />
+    <option name="LAST_COMMIT_MESSAGE" value="whisper and gpt" />
   </component>
 </project>
