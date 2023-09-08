@@ -20,7 +20,7 @@ object PageRepository {
         }
 
         val lines:List<Line> = text.split("\n").map { Line(it) }//こんなコードは本来ドメイン層でやるべきこと Pageクラスのコンストラクタの自由度がないからこんなことになっている 本当はPageに直接文字列を渡したい
-        return Page(title = link, lines = lines)
+        return Page(link = link, lines = lines)
     }
 
     fun isExistLink(link: String): Boolean {
@@ -46,7 +46,7 @@ object PageRepository {
     }
 
     fun restorePage(page: Page) {
-        val fileName = "${page.title}.txt"
+        val fileName = "${page.getLink()}.txt"
         val content:String = page.plainValue()
 
         try {

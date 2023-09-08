@@ -49,8 +49,6 @@ fun App() = singleWindowApplication(
         placeholder = { Text(text = "textbox") },
         onValueChange = {
             textFieldString = it
-            //val memos = convertToMemos(it) //memos動作確認用
-            //println(memos)
                         },
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.None,
@@ -82,7 +80,3 @@ fun getRawData(filePath: String): ArrayList<List<String>> {
     return rawData
 }
 
-
-fun main() {
-    App()
-}
