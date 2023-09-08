@@ -4,12 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="whisper and gpt">
-      <change afterPath="$PROJECT_DIR$/localfiles/firstMemo2.txt" afterDir="false" />
+    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="main page clickable">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/PageRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/PageRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Page.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Page.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -108,7 +106,7 @@
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.MainKt">
+  <component name="RunManager" selected="Kotlin.PageEditViewScreenKt">
     <configuration name="PageTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -147,6 +145,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="PageEditViewScreenKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ui.PageEditViewScreenKt" />
+      <module name="ixma.main" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TempKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="TempKt" />
       <module name="ixma.main" />
@@ -169,6 +174,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.PageEditViewScreenKt" />
         <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.TempKt" />
@@ -261,7 +267,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694186537312</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="main page clickable">
+      <option name="closed" value="true" />
+      <created>1694190638318</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1694190638320</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -272,6 +286,7 @@
     <MESSAGE value="add adm_fs" />
     <MESSAGE value="whisper and gpt" />
     <MESSAGE value="findAllLinks" />
-    <option name="LAST_COMMIT_MESSAGE" value="findAllLinks" />
+    <MESSAGE value="main page clickable" />
+    <option name="LAST_COMMIT_MESSAGE" value="main page clickable" />
   </component>
 </project>

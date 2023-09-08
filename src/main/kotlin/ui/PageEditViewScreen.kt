@@ -24,11 +24,13 @@ import model.Page
 import model.SubString
 
 @Composable
-private fun PageEditViewScreen(link:String) {
+private fun PageEditViewScreen(link: String) {
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
 
-    Row{
-        PageViewScreen(page)
+    Row(
+        modifier = Modifier.fillMaxSize()
+    ) {
+        PageViewScreen(page, modifier = Modifier.weight(1f))
         PageEditScreen(
             onValueChange = {
                 run {
@@ -36,18 +38,16 @@ private fun PageEditViewScreen(link:String) {
                     println(page)
                 }
             },
-            onTitleChange = {page = page.editTitle(it)}
+            onTitleChange = { page = page.editTitle(it) },
+            modifier = Modifier.weight(1f)
         )
-
     }
 }
-
-
 
 @Composable
 private fun PageEditScreen(
     onValueChange: (String) -> Unit = {},
-    onTitleChange:(String) -> Unit = {},
+    onTitleChange: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var textFieldString by remember {
@@ -66,13 +66,13 @@ private fun PageEditScreen(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
         ),
-        modifier = Modifier.border(1.dp, Color.Black).padding(3.dp).height(800.dp).fillMaxWidth(),
+        modifier = modifier.then(Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight()) // ここを修正
     )
 }
 
 @Composable
-fun PageViewScreen(page:Page,modifier: Modifier=Modifier) {
-    Column {
+fun PageViewScreen(page: Page, modifier: Modifier = Modifier) {
+    Column(modifier = modifier) { // ここでmodifierを追加
         page.getLines().forEach{
                 it -> Line(it, onLinkClick = {})
         }
