@@ -5,6 +5,31 @@ import model.Page
 import java.io.File
 
 object PageRepository {
+    fun findAllLinks(): List<Page> {
+        val directoryPath = this.directory()
+        val directory = File(directoryPath)
+
+        val pages = mutableListOf<Page>()
+
+        if (directory.exists() && directory.isDirectory) {
+            val filesInDirectory = directory.listFiles()
+
+            if (filesInDirectory != null) {
+                filesInDirectory.filter { it.isFile && it.name.endsWith(".txt") }.forEach {
+                    val link = it.name.removeSuffix(".txt")
+                    val page = findByLink(link)
+                    pages.add(page)
+                }
+            } else {
+                println("ディレクトリ内のファイルをリストアップできませんでした。")
+            }
+        } else {
+            println("指定したディレクトリが存在しないかディレクトリではありません。")
+        }
+
+        return pages
+    }
+
     fun findByLink(link: String): Page {
         //TODO エラーハンドリング必要
 
