@@ -9,6 +9,7 @@ import java.awt.dnd.DropTarget
 import java.awt.dnd.DropTargetAdapter
 import java.awt.dnd.DropTargetDropEvent
 import java.io.File
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,10 +21,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.*
+import data.PageRepository
 import kotlin.collections.ArrayList
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.Text
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.singleWindowApplication
+
 
 fun App() = singleWindowApplication(
-    title = "ixma", state = WindowState(width = 1000.dp, height = 1000.dp)
+    title = "ixma", state = WindowState(width = 1000.dp, height = 300.dp)
 ) {
     // ウィンドウの状態管理変数
     var isOpenDataWindow: Boolean by remember { mutableStateOf(false) }
@@ -37,28 +48,48 @@ fun App() = singleWindowApplication(
     var textFieldString by remember {
         mutableStateOf(text)
     }
-    TextField(
-        value = textFieldString,
-        colors = TextFieldDefaults.textFieldColors(
-            textColor = Color.Black,
-            backgroundColor = Color.White,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-        ),
-        placeholder = { Text(text = "textbox") },
-        onValueChange = {
-            textFieldString = it
-                        },
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.None,
-            autoCorrect = true,
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Next
-        ),
-        modifier = Modifier.border(1.dp, Color.Black).padding(3.dp).height(800.dp).fillMaxWidth(),
-    )
+    val pages by remember { mutableStateOf(PageRepository.findAllLinks()) }
 
+    Column(
+        modifier = Modifier.fillMaxSize().background(Color.White),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        LazyColumn(modifier = Modifier.weight(1f)) {
+            items(pages) { page ->
+                Text(text = page.link, modifier = Modifier.clickable {
+                    // ここでクリックされたときの処理を書く
+                    println("${page.link} was clicked!")
+                }.padding(8.dp))
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp)) // Optional: You can add a spacer for better spacing
+
+        TextField(
+            value = textFieldString,
+            colors = TextFieldDefaults.textFieldColors(
+                textColor = Color.Black,
+                backgroundColor = Color.White,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+            ),
+            placeholder = { Text(text = "textbox") },
+            onValueChange = {
+                textFieldString = it
+            },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = true,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            modifier = Modifier
+                .border(1.dp, Color.Black)
+                .padding(3.dp)
+                .fillMaxWidth()
+        )
+    }
 //    if (isOpenDataWindow) {
 //        EditWindow(rawData, filePath)
 //    }
@@ -80,3 +111,8 @@ fun getRawData(filePath: String): ArrayList<List<String>> {
     return rawData
 }
 
+
+fun main() {
+    App()
+//    testFindAllLinks()
+}

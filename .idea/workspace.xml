@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="whisper and gpt">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/localfiles/firstMemo2.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/data/PageRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/data/PageRepository.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/model/Page.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/model/Page.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,7 +40,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master" />
+        <entry key="$PROJECT_DIR$" value="#006_kozaka_main_screen" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -71,7 +73,9 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2UVc3FfoFqD7RYiXvgK6jmGzPcc" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <OptionsSetting value="false" id="Update" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -83,8 +87,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "#006__kozaka__main__screen",
-    "last_opened_file_path": "C:/Users/Takao1061/Desktop/ixma/src/main/kotlin",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/Takao1061/Desktop/ixma/localfiles",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -95,6 +99,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Takao1061\Desktop\ixma\localfiles" />
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
       <recent name="C:\Users\Takao1061\Desktop\ixma" />
     </key>
@@ -103,7 +108,7 @@
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.desktop">
+  <component name="RunManager" selected="Kotlin.MainKt">
     <configuration name="PageTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -164,10 +169,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.TempKt" />
         <item itemvalue="Gradle.PageTest" />
-        <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>
   </component>
@@ -248,7 +253,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693647611249</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="findAllLinks">
+      <option name="closed" value="true" />
+      <created>1694186537312</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1694186537312</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,6 +271,7 @@
     <MESSAGE value="add main-f" />
     <MESSAGE value="add adm_fs" />
     <MESSAGE value="whisper and gpt" />
-    <option name="LAST_COMMIT_MESSAGE" value="whisper and gpt" />
+    <MESSAGE value="findAllLinks" />
+    <option name="LAST_COMMIT_MESSAGE" value="findAllLinks" />
   </component>
 </project>

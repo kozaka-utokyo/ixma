@@ -72,7 +72,7 @@ object PageRepository {
 
     fun restorePage(page: Page) {
         val directory = directory()
-        val fileName = "${directory}${page.getLink()}.txt"
+        val fileName = "${directory}${page.getLink2()}.txt"
         val content:String = page.plainValue()
 
         try {

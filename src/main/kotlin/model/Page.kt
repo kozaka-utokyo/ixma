@@ -4,10 +4,10 @@ import data.PageRepository
 
 
 data class Page(
-    private val link: String,
+    val link: String,
     private val lines: List<Line>
 ) {
-    fun getLink(): String {
+    fun getLink2(): String {
         return link
     }
 
@@ -33,7 +33,7 @@ data class Page(
     }
 
     fun editTitle(newTitle: String): Page {
-        PageRepository.deletePage(this.getLink())
+        PageRepository.deletePage(this.getLink2())
         val newInstance = Page(newTitle, this.lines)
         PageRepository.restorePage(newInstance)
         return newInstance
