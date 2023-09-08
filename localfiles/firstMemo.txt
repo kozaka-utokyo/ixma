@@ -1,1 +1,2 @@
-sd
+this is your first memo
+go to [secondMemo]

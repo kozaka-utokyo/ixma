@@ -4,14 +4,12 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,13 +22,13 @@ import model.Page
 import model.SubString
 
 @Composable
-private fun PageEditViewScreen(link: String) {
+fun PageEditViewScreen(link: String, windowController: WindowController = WindowController()) {
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
 
     Row(
         modifier = Modifier.fillMaxSize()
     ) {
-        PageViewScreen(page, modifier = Modifier.weight(1f))
+        PageViewScreen(page, modifier = Modifier.weight(1f),windowController)
         PageEditScreen(
             onValueChange = {
                 run {
@@ -71,20 +69,25 @@ private fun PageEditScreen(
 }
 
 @Composable
-fun PageViewScreen(page: Page, modifier: Modifier = Modifier) {
+fun PageViewScreen(
+    page: Page,
+    modifier: Modifier = Modifier,
+    windowController: WindowController = WindowController()
+) {
     Column(modifier = modifier) { // ここでmodifierを追加
-        page.getLines().forEach{
-                it -> Line(it, onLinkClick = {})
+        page.getLines().forEach { it ->
+            Line(it, windowController)
         }
     }
 }
+
 @Composable
-private fun Line(line:Line,onLinkClick:(link:String)->Unit){
-    val subStrings:List<SubString> = line.dividedStringsByLinks()
-    Row{
+private fun Line(line: Line, windowController: WindowController) {
+    val subStrings: List<SubString> = line.dividedStringsByLinks()
+    Row {
         subStrings.forEach {
             if (it.isLinkText)
-                Text(it.text, modifier = Modifier.clickable { println(it.text) })
+                Text(it.text, modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })
             else
                 Text(it.text)
         }
@@ -105,8 +108,7 @@ fun PageEditScreenPreview() {
 }
 
 
-
-fun main(){
+fun main() {
     singleWindowApplication(title = "testPageEditViewScreen", state = WindowState(width = 1000.dp, height = 1000.dp)) {
         PageEditViewScreen("firstMemo")
     }
