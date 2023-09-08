@@ -108,6 +108,6 @@ fun PageEditScreenPreview() {
 
 fun main(){
     singleWindowApplication(title = "testPageEditViewScreen", state = WindowState(width = 1000.dp, height = 1000.dp)) {
-        PageEditViewScreen("hoge")
+        PageEditViewScreen("firstMemo")
     }
 }
