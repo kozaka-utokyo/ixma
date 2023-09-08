@@ -9,7 +9,7 @@ fun App() = application {
     val windowController = WindowController()
 
     Window(onCloseRequest = ::exitApplication) {
-        InitialScreen()
+        InitialScreen(windowController)
     }
     RenderWindows(windowController)
 }

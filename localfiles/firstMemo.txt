@@ -1,2 +1,2 @@
 this is your first memo
-go to [secondMemo]
+go to [seco]

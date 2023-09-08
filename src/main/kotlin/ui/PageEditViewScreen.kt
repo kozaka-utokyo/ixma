@@ -10,9 +10,11 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
@@ -89,7 +91,11 @@ private fun Line(line: Line, windowController: WindowController) {
     Row {
         subStrings.forEach {
             if (it.isLinkText)
-                Text(it.text, modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })
+                Text(it.text,
+                    color = Color.Blue,
+                    fontWeight = FontWeight.Bold, // 太字
+                    textDecoration = TextDecoration.Underline, // アンダーライン
+                    modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })
             else
                 Text(it.text)
         }

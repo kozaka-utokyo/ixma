@@ -41,6 +41,7 @@ data class Line(
         // Print the resulting SubString list
         return subStrings
     }
+
     private fun dividedStringsByLinks2(): List<SubString> {//正規表現を使わない実装
         val result = mutableListOf<SubString>()
         val buffer = StringBuilder()
