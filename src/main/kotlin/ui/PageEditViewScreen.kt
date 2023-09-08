@@ -37,7 +37,8 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
                 }
             },
             onTitleChange = { page = page.editTitle(it) },
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f),
+            initText = page.plainValue()
         )
     }
 }
@@ -46,10 +47,11 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
 private fun PageEditScreen(
     onValueChange: (String) -> Unit = {},
     onTitleChange: (String) -> Unit = {},
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    initText:String = ""
 ) {
     var textFieldString by remember {
-        mutableStateOf("")
+        mutableStateOf(initText)
     }
     TextField(
         value = textFieldString,

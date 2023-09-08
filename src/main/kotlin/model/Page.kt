@@ -28,8 +28,9 @@ data class Page(
         val newLines = entireValue.split("\n").map {
             Line(valueString = it)
         }
-        PageRepository.restorePage(this)
-        return Page(this.link, newLines)
+        val newPage = Page(this.link, newLines)
+        PageRepository.restorePage(newPage)
+        return newPage
     }
 
     fun editTitle(newTitle: String): Page {
