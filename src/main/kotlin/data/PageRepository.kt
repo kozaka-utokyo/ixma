@@ -8,7 +8,7 @@ object PageRepository {
     fun findByLink(link: String): Page {
         //TODO エラーハンドリング必要
 
-        val fileName = "$link.txt" // 読み込むファイルの名前
+        val fileName = "${directory()}$link.txt" // 読み込むファイルの名前
         val file = File(fileName)
         var text = ""
 
@@ -46,7 +46,8 @@ object PageRepository {
     }
 
     fun restorePage(page: Page) {
-        val fileName = "${page.getLink()}.txt"
+        val directory = directory()
+        val fileName = "${directory}${page.getLink()}.txt"
         val content:String = page.plainValue()
 
         try {

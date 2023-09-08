@@ -28,6 +28,7 @@ data class Page(
         val newLines = entireValue.split("\n").map {
             Line(valueString = it)
         }
+        PageRepository.restorePage(this)
         return Page(this.link, newLines)
     }
 
