@@ -30,7 +30,7 @@ fun InitialScreen(windowController: WindowController){
         modifier = Modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        Button(onClick = { windowController.openNewPageWindow("new") }) {
+        Button(onClick = { windowController.openNewPageWindow("firstMemo") }) {
             Text("Open FirstMemo")
         }
         LazyColumn(modifier = Modifier.weight(1f)) {

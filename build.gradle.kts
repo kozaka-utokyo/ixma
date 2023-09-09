@@ -40,7 +40,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ixma"
-            packageVersion = "1.0.0"
+            packageVersion = "2.0.0"
         }
     }
 }
