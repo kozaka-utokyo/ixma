@@ -30,6 +30,7 @@ dependencies {
     implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
     implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-client-core-jvm:$ktor_version")
+    //implementation("media.kamel:kamel-image:0.7.3")
 //    implementation("io.ktor:ktor-client-multipart-jvm:$ktor_version")
 }
 
@@ -40,7 +41,7 @@ compose.desktop {
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
             packageName = "ixma"
-            packageVersion = "1.0.0"
+            packageVersion = "2.0.0"
         }
     }
 }

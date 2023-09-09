@@ -1,0 +1,2239 @@
+Index: src/main/kotlin/function.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import io.ktor.client.engine.cio.*\nimport io.ktor.client.request.*\nimport io.ktor.http.*\nimport io.ktor.client.HttpClient\nimport io.ktor.client.features.json.*\nimport io.ktor.client.features.json.serializer.*\nimport kotlinx.serialization.Serializable\nimport io.ktor.client.features.logging.*\nimport io.ktor.client.request.forms.*\nimport io.ktor.utils.io.core.*\nimport kotlinx.coroutines.runBlocking\nimport java.io.File\n\n// 数字かどうか判定\nfun isNumeric(s: String): Boolean {\n    return try {\n        s.toDouble()\n        true\n    } catch (e: NumberFormatException) {\n        false\n    }\n}\n\n// 自然数かどうか判定\nfun isPositiveNum(s: String): Boolean {\n    if (isNumeric(s)) {\n        if (s.substring(0, 1) == \"0\") {\n            return false\n        }\n        for (c in s) {\n            if (c !in '0'..'9') {\n                return false\n            }\n        }\n    } else {\n        return false\n    }\n    return true\n}\n\n// 指定範囲内の自然数とcommaで成立しているか判定\nfun isValidNumOrComma(maxNum: Int, s: String): Boolean {\n    for (row in s.split(\",\").map { it.trim() }) {\n        if (!isPositiveNum(row)) {\n            return false\n        } else {\n            if (\" \" in s) {\n                return false\n            } else if (row.toInt() > maxNum) {\n                return false\n            }\n        }\n    }\n    return true\n}\n\n//　\nfun testIsPositiveNum() {\n    val texts = listOf(\n        \"1\", \"2\", \"202\", \"02\",\n        \"2,2\", \",\", \"\", \" \"\n    )\n    for (row in texts) {\n        print(isPositiveNum(row))\n        print(\": '\")\n        print(row)\n        println(\"'\")\n    }\n}\n\n\ninline fun <T> Iterable<T>.firstIndex(predicate: (T) -> Boolean): Int{\n    return this.mapIndexed { index, item -> Pair(index, item) }\n        .firstOrNull() { predicate(it.second) }\n        ?.first.toString().toInt()\n}\n\nfun testIsValidNumOrComma(maxNum: Int) {\n    val texts = listOf(\n        \"1\", \"2\", \"10\", \"100\", \"153\",\n        \"2,2\", \"100,100\", \"1,3,4\",\n        \"154\", \"202\", \"02\", \"153,154\", \"0\", \"-1\",\n        \"153 \", \",2\", \"2,\", \",0\", \"1.1\",\n        \"\", \" \", \" ,\", \",\", \"a\"\n    )\n    for (row in texts) {\n        print(isValidNumOrComma(maxNum, row))\n        print(\": '\")\n        print(row)\n        println(\"'\")\n    }\n}\n\nfun testFirstIndexOrNull() {\n    val arr = arrayListOf(\"a\", \"b\", \"c\")\n    println(arr.firstIndex { it == \"b\" })\n//    println(arr.firstIndex { it == \"z\" })\n}\n\n\n@Serializable\ndata class CompletionRequest(\n    val model: String,\n    val messages: List<Message>,\n    val temperature: Double? = null\n)\n\n@Serializable\ndata class Message(\n    val role: String,\n    val content: String\n)\n\nsuspend fun gpt() {\n    val client = HttpClient {\n        install(JsonFeature) {\n            serializer = KotlinxSerializer()\n        }\n    }\n\n    val key = readApiKeyFromFile(\"api_key.txt\")  // APIキーをファイルから読み込み\n    val url = \"https://api.openai.com/v1/chat/completions\"\n\n    val response: String = client.post(url) {\n        contentType(ContentType.Application.Json)\n        header(\"Authorization\", \"Bearer $key\")\n        body = CompletionRequest(\n            model = \"gpt-3.5-turbo\",\n            messages = listOf(Message(role = \"user\", content = \"Say this is a test!\")),\n            temperature = 0.7\n        )\n    }\n\n    println(response)\n}\n\n//fun whisper() = runBlocking {\n//    val client = HttpClient(CIO) {\n//        install(JsonFeature) {\n//            serializer = KotlinxSerializer()\n//        }\n//        install(Logging) {\n//            logger = Logger.DEFAULT\n//            level = LogLevel.ALL\n//        }\n//    }\n//\n//    val file = File(\"test.mp3\")\n//    val apiKey = readApiKeyFromFile(\"api_key.txt\") // APIキーをファイルから読み込む\n//\n//    val response = client.submitForm<String> {\n//        url(\"https://api.openai.com/v1/audio/transcriptions\")\n//        method = HttpMethod.Post\n//\n//        headers {\n//            append(\"Authorization\", \"Bearer $apiKey\") // 読み込んだAPIキーを使用する\n//        }\n//\n//        body = MultiPartFormDataContent(formData {\n//            appendInput(\n//                key = \"file\",\n//                headers = Headers.build {\n//                    append(HttpHeaders.ContentDisposition, \"filename=test.mp3\")\n//                    append(HttpHeaders.ContentType, \"audio/mpeg\")\n//                }\n//            ) {\n//                ByteReadPacket(file.readBytes())\n//            }\n//            append(\"model\", \"whisper-1\")\n//        })\n//    }\n//    println(response)\n//}\n\n//suspend fun main(){\n//    whisper()\n//}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/function.kt b/src/main/kotlin/function.kt
+--- a/src/main/kotlin/function.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/src/main/kotlin/function.kt	(date 1694440708553)
+@@ -11,93 +11,6 @@
+ import kotlinx.coroutines.runBlocking
+ import java.io.File
+ 
+-// 数字かどうか判定
+-fun isNumeric(s: String): Boolean {
+-    return try {
+-        s.toDouble()
+-        true
+-    } catch (e: NumberFormatException) {
+-        false
+-    }
+-}
+-
+-// 自然数かどうか判定
+-fun isPositiveNum(s: String): Boolean {
+-    if (isNumeric(s)) {
+-        if (s.substring(0, 1) == "0") {
+-            return false
+-        }
+-        for (c in s) {
+-            if (c !in '0'..'9') {
+-                return false
+-            }
+-        }
+-    } else {
+-        return false
+-    }
+-    return true
+-}
+-
+-// 指定範囲内の自然数とcommaで成立しているか判定
+-fun isValidNumOrComma(maxNum: Int, s: String): Boolean {
+-    for (row in s.split(",").map { it.trim() }) {
+-        if (!isPositiveNum(row)) {
+-            return false
+-        } else {
+-            if (" " in s) {
+-                return false
+-            } else if (row.toInt() > maxNum) {
+-                return false
+-            }
+-        }
+-    }
+-    return true
+-}
+-
+-//　
+-fun testIsPositiveNum() {
+-    val texts = listOf(
+-        "1", "2", "202", "02",
+-        "2,2", ",", "", " "
+-    )
+-    for (row in texts) {
+-        print(isPositiveNum(row))
+-        print(": '")
+-        print(row)
+-        println("'")
+-    }
+-}
+-
+-
+-inline fun <T> Iterable<T>.firstIndex(predicate: (T) -> Boolean): Int{
+-    return this.mapIndexed { index, item -> Pair(index, item) }
+-        .firstOrNull() { predicate(it.second) }
+-        ?.first.toString().toInt()
+-}
+-
+-fun testIsValidNumOrComma(maxNum: Int) {
+-    val texts = listOf(
+-        "1", "2", "10", "100", "153",
+-        "2,2", "100,100", "1,3,4",
+-        "154", "202", "02", "153,154", "0", "-1",
+-        "153 ", ",2", "2,", ",0", "1.1",
+-        "", " ", " ,", ",", "a"
+-    )
+-    for (row in texts) {
+-        print(isValidNumOrComma(maxNum, row))
+-        print(": '")
+-        print(row)
+-        println("'")
+-    }
+-}
+-
+-fun testFirstIndexOrNull() {
+-    val arr = arrayListOf("a", "b", "c")
+-    println(arr.firstIndex { it == "b" })
+-//    println(arr.firstIndex { it == "z" })
+-}
+-
+-
+ @Serializable
+ data class CompletionRequest(
+     val model: String,
+Index: src/main/kotlin/Main.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import java.io.File\nimport androidx.compose.ui.window.*\nimport kotlin.collections.ArrayList\nimport ui.RenderWindows\nimport ui.WindowController\n\n\nfun App() = application {\n    val windowController = WindowController()\n\n    Window(onCloseRequest = ::exitApplication) {\n        InitialScreen()\n    }\n    RenderWindows(windowController)\n}\n\nfun getRawData(filePath: String): ArrayList<List<String>> {\n    var rawData = arrayListOf<List<String>>()\n    try {\n        val data = readCsv(File(filePath))\n        rawData.add((List(data[0].size) { it }.map { it.toString() }))\n        rawData.add(data[0].keys.toList())\n        for (row in data) {\n            rawData.add(row.values.toList())\n        }\n    } catch (e: Exception) {\n        println(\"ERROR\")\n        println(filePath)\n    }\n    return rawData\n}\n\n\nfun main() {\n    App()\n//    testFindAllLinks()\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/Main.kt b/src/main/kotlin/Main.kt
+--- a/src/main/kotlin/Main.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/src/main/kotlin/Main.kt	(date 1694440708550)
+@@ -8,30 +8,12 @@
+ fun App() = application {
+     val windowController = WindowController()
+ 
+-    Window(onCloseRequest = ::exitApplication) {
+-        InitialScreen()
++    Window(onCloseRequest = ::exitApplication, title = "Ixma") {
++        InitialScreen(windowController)
+     }
+     RenderWindows(windowController)
+ }
+ 
+-fun getRawData(filePath: String): ArrayList<List<String>> {
+-    var rawData = arrayListOf<List<String>>()
+-    try {
+-        val data = readCsv(File(filePath))
+-        rawData.add((List(data[0].size) { it }.map { it.toString() }))
+-        rawData.add(data[0].keys.toList())
+-        for (row in data) {
+-            rawData.add(row.values.toList())
+-        }
+-    } catch (e: Exception) {
+-        println("ERROR")
+-        println(filePath)
+-    }
+-    return rawData
+-}
+-
+-
+ fun main() {
+     App()
+-//    testFindAllLinks()
+ }
+\ No newline at end of file
+Index: build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import org.jetbrains.compose.desktop.application.dsl.TargetFormat\n\nplugins {\n    kotlin(\"jvm\")\n    id(\"org.jetbrains.compose\")\n    kotlin(\"plugin.serialization\") version \"1.6.0\"\n}\n\ngroup = \"com.example\"\nversion = \"1.0-SNAPSHOT\"\n\nrepositories {\n    mavenCentral()\n    maven(\"https://maven.pkg.jetbrains.space/public/p/compose/dev\")\n    google()\n}\n\ndependencies {\n    // Note, if you develop a library, you should use compose.desktop.common.\n    // compose.desktop.currentOs should be used in launcher-sourceSet\n    // (in a separate module for demo project and in testMain).\n    // With compose.desktop.common you will also lose @Preview functionality\n    implementation(compose.desktop.currentOs)\n    implementation(\"junit:junit:4.13.1\")\n    implementation(\"org.junit.jupiter:junit-jupiter:5.8.1\")\n    testImplementation(\"org.junit.jupiter:junit-jupiter:5.8.1\")\n    val ktor_version = \"1.6.0\"\n    implementation(\"io.ktor:ktor-client-cio:$ktor_version\")\n    implementation(\"io.ktor:ktor-client-json-jvm:$ktor_version\")\n    implementation(\"io.ktor:ktor-client-serialization-jvm:$ktor_version\")\n    implementation(\"io.ktor:ktor-client-logging-jvm:$ktor_version\")\n    implementation(\"io.ktor:ktor-client-core-jvm:$ktor_version\")\n//    implementation(\"io.ktor:ktor-client-multipart-jvm:$ktor_version\")\n}\n\ncompose.desktop {\n    application {\n        mainClass = \"MainKt\"\n\n        nativeDistributions {\n            targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)\n            packageName = \"ixma\"\n            packageVersion = \"1.0.0\"\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle.kts b/build.gradle.kts
+--- a/build.gradle.kts	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/build.gradle.kts	(date 1694440708535)
+@@ -3,7 +3,6 @@
+ plugins {
+     kotlin("jvm")
+     id("org.jetbrains.compose")
+-    kotlin("plugin.serialization") version "1.6.0"
+ }
+ 
+ group = "com.example"
+@@ -24,13 +23,6 @@
+     implementation("junit:junit:4.13.1")
+     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
+     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+-    val ktor_version = "1.6.0"
+-    implementation("io.ktor:ktor-client-cio:$ktor_version")
+-    implementation("io.ktor:ktor-client-json-jvm:$ktor_version")
+-    implementation("io.ktor:ktor-client-serialization-jvm:$ktor_version")
+-    implementation("io.ktor:ktor-client-logging-jvm:$ktor_version")
+-    implementation("io.ktor:ktor-client-core-jvm:$ktor_version")
+-//    implementation("io.ktor:ktor-client-multipart-jvm:$ktor_version")
+ }
+ 
+ compose.desktop {
+Index: src/main/kotlin/edit.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/edit.kt b/src/main/kotlin/edit.kt
+deleted file mode 100644
+--- a/src/main/kotlin/edit.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ /dev/null	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
+@@ -1,793 +0,0 @@
+-import androidx.compose.foundation.*
+-import androidx.compose.foundation.layout.*
+-import androidx.compose.foundation.text.KeyboardOptions
+-import androidx.compose.material.*
+-import androidx.compose.runtime.*
+-import java.io.File
+-import androidx.compose.ui.Alignment
+-import androidx.compose.ui.Modifier
+-import androidx.compose.ui.graphics.Color
+-import androidx.compose.ui.text.input.ImeAction
+-import androidx.compose.ui.text.input.KeyboardCapitalization
+-import androidx.compose.ui.text.input.KeyboardType
+-import androidx.compose.ui.text.style.TextAlign
+-import androidx.compose.ui.unit.dp
+-import androidx.compose.ui.window.*
+-import java.util.*
+-import kotlin.collections.ArrayList
+-
+-
+-@Composable
+-fun EditWindow(
+-    rawData: ArrayList<List<String>>,
+-    filePath: String,
+-) {
+-    val stateVertical = rememberScrollState(0)
+-    val stateHorizontal = rememberScrollState(0)
+-    var sampleDataNum by remember { mutableStateOf(0) }
+-    var daySelected = ""
+-    var modelSelected = ""
+-    val data = remember { readCsv(File(filePath)) }
+-    val dataSize = data[0].size
+-    // cell space
+-    val wordCounts = mutableListOf(3, 21, 7, 26, 1, 1, 1)
+-    for ((index, elem) in rawData.withIndex()) {
+-        elem.forEach {
+-            if (index == 0) {
+-                if (wordCounts[4] < it.length) {
+-                    wordCounts[4] = it.length
+-                }
+-            } else if (index == 1) {
+-                if (wordCounts[4] < it.length) {
+-                    wordCounts[4] = it.length
+-                }
+-            } else {
+-                elem.forEach {
+-                    if (wordCounts[5] < it.length) {
+-                        wordCounts[5] = it.length
+-                        wordCounts[6] = wordCounts[5] + 5
+-                    }
+-                }
+-            }
+-        }
+-    }
+-    var wordSpaces = FloatArray(wordCounts.size)
+-    val spaceCountsSum = wordCounts.sum().toFloat()
+-    val wordSpaceSum = spaceCountsSum * 15
+-    wordCounts.forEachIndexed { index, s ->
+-        wordSpaces[index] = s.toFloat() / spaceCountsSum + 0.1.toFloat()
+-    }
+-    val correspondences = remember { getCorrespondences(data) }
+-    val corCols = correspondences.map { it.outCol }
+-    var dataColumns = data[0].keys.toMutableList()
+-    dataColumns.add(0, "---")
+-    var outputNumStrings by remember { mutableStateOf(OutputNumsStrings(correspondences)) }
+-    var outputSettingStrings by remember { mutableStateOf(OutputSettingStrings(correspondences)) }
+-    var examUpperNumStrings by remember { mutableStateOf("5000") }
+-    var isColumnSet by remember { mutableStateOf(true) }
+-    var manageID by remember { mutableStateOf("") }
+-    // テーブル描画部分
+-    Column(
+-        modifier = Modifier.fillMaxSize().verticalScroll(stateVertical).horizontalScroll(stateHorizontal).padding(
+-            start = 4.dp, end = 8.dp, top = 3.dp, bottom = 8.dp
+-        ), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally
+-    ) {
+-        Row(Modifier.width(wordSpaceSum.dp)) {
+-            sampleDataNum = dataSelectButton(sampleDataNum, data.size - 1, 0.1F)
+-            outputButton(
+-                correspondences,
+-                outputNumStrings.getAll(),
+-                outputSettingStrings.getAll(),
+-                examUpperNumStrings,
+-                isColumnSet,
+-                0.1F,
+-            )
+-            examUpperNumStrings = EditCell(text = examUpperNumStrings, weight = 0.1F)
+-            TableCell(text = "$filePath", weight = 0.7F)
+-        }
+-        Row(Modifier.width(wordSpaceSum.dp)) {
+-            TableCell(text = "設定", weight = 1F)
+-            TableCell(text = "列名有無", weight = 1F)
+-            TableCell(text = "氏名分割", weight = 1F)
+-            TableCell(text = "住所分割", weight = 1F)
+-        }
+-        Row(Modifier.width(wordSpaceSum.dp)) {
+-            TableCell(text = "選択", weight = 1F)
+-            val selectItem = pullDownCellWithItem(setting = listOf("あり", "なし"), weight = 1F)
+-            isColumnSet = selectItem == "あり"
+-            pullDownCellWithItem(setting = listOf("要", "済", "項目なし"), weight = 1F)
+-            pullDownCellWithItem(setting = listOf("要", "済", "項目なし"), weight = 1F)
+-        }
+-        Row(Modifier.background(Color.Gray).width(wordSpaceSum.dp)) {
+-            TableCell(text = "No.", weight = wordSpaces[0])
+-            TableCell(text = "Tag", weight = wordSpaces[1])
+-            TableCell(text = "Order", weight = wordSpaces[2])
+-            TableCell(text = "Setting", weight = wordSpaces[3])
+-            TableCell(text = "Column", weight = wordSpaces[4])
+-            TableCell(text = "Example", weight = wordSpaces[5])
+-            TableCell(text = "Output", weight = wordSpaces[6])
+-        }
+-        for ((index, elem) in correspondences.withIndex()) {
+-            Row(Modifier.width(wordSpaceSum.dp)) {
+-                var validation = true
+-                var pullSelected = ""
+-
+-                // No.
+-                TableCell(text = elem.cc.toString(), weight = wordSpaces[0])
+-
+-                // Tag
+-                if (elem.style == "req") {
+-                    RequiredTableCell(text = elem.outCol, weight = wordSpaces[1])
+-                } else if (elem.style == "sub") {
+-                    CondTableCell(text = elem.outCol, weight = wordSpaces[1])
+-                } else if (elem.style == "set") {
+-                    TableCell(text = elem.outCol, weight = wordSpaces[1])
+-                } else {
+-                    SubTableCell(text = elem.outCol, weight = wordSpaces[1])
+-                }
+-
+-                // Suggestion
+-                val noOrders =
+-                    listOf(
+-                        "モデルID",
+-                        "イベント種別",
+-                        "利用上限金額（与信枠）",
+-                        "決済ステータス",
+-                        "決済方法",
+-                        "購入者国コード",
+-                        "配送先国コード"
+-                    )
+-                var numDownRawValue = ""
+-                if (elem.outCol !in noOrders) {
+-                    if (elem.style == "set" || elem.sugNums.toList().size == 0) {
+-                        TableCell(text = "", weight = wordSpaces[2] / 5 * 2)
+-                    } else {
+-                        numDownRawValue = numDownCell(nums = elem.sugNums.toList(), weight = wordSpaces[2] / 5 * 2)
+-                    }
+-                }
+-                if ("--selected" in numDownRawValue) {
+-                    val numDownValue = numDownRawValue
+-                    if (outputNumStrings.get(index) == "") {
+-                        validation = outputNumStrings.update(index, numDownValue, dataSize)
+-                    } else {
+-                        val tmp = outputNumStrings.get(index) + ",$numDownValue"
+-                        validation = outputNumStrings.update(index, tmp, dataSize)
+-                    }
+-                    if (elem.outCol == "受付番号") {  // for "加盟店管理ID"
+-                        manageID = numDownValue
+-                    }
+-                }
+-
+-                // Order, (EditCellに投げるまで--selectedはつけたまま)
+-                var lastOutputNum = 0
+-                var exValue = "---"
+-                var outputValue = "---"
+-                if (elem.style == "set") {
+-                    if (elem.outCol in noOrders) {
+-                        TableCell(text = "", weight = wordSpaces[2])
+-                    } else if (elem.outCol == "決済日時") {  // 連動セル
+-                        val textValue = outputNumStrings.get(corCols.firstIndex { it == "申請日時" })
+-                        EditCell(text = textValue, weight = wordSpaces[2] / 5 * 3)
+-                        validation = outputNumStrings.update(index, textValue, dataSize)
+-                    } else if (elem.outCol == "加盟店管理ID") {  // 連動セル
+-                        manageID = EditCell(text = manageID, weight = wordSpaces[2] / 5 * 3)
+-                        validation = outputNumStrings.update(index, manageID, dataSize)
+-                    } else if (elem.outCol in listOf(  // 名前側
+-                            "購入者名前SHA2ハッシュ", "購入者正規化済み名前ハッシュ", "購入者正規化済み名前SHA2ハッシュ"
+-                        )
+-                    ) {
+-                        val textValue = outputNumStrings.get(corCols.firstIndex { it == "購入者名前ハッシュ" })
+-                        EditCell(text = textValue, weight = wordSpaces[2] / 5 * 3)
+-                        validation = outputNumStrings.update(index, textValue, dataSize)
+-                    } else if (elem.outCol in listOf(  // 苗字側
+-                            "購入者苗字SHA2ハッシュ", "購入者正規化済み苗字ハッシュ", "購入者正規化済み苗字SHA2ハッシュ"
+-                        )
+-                    ) {
+-                        val textValue = outputNumStrings.get(corCols.firstIndex { it == "購入者苗字ハッシュ" })
+-                        EditCell(text = textValue, weight = wordSpaces[2] / 5 * 3)
+-                        validation = outputNumStrings.update(index, textValue, dataSize)
+-                    } else if (elem.outCol in listOf(
+-                            // 連動セル
+-                            "購入者氏名文字数",
+-                            "購入者氏名漢字数",
+-                            "購入者氏名ひらがな数",
+-                            "購入者氏名カタカナ数",
+-                            "購入者氏名アルファベット数",
+-                            "購入者氏名上記以外文字数",
+-                            "購入者氏名辞書存在",
+-                        )
+-                    ) {
+-                        var tableText = ""
+-                        val textValue = outputNumStrings.get(corCols.firstIndex { it == "購入者苗字ハッシュ" })
+-                        val textValue2 = outputNumStrings.get(corCols.firstIndex { it == "購入者名前ハッシュ" })
+-                        if (textValue != "") {
+-                            if (textValue2 != "") {
+-                                tableText = "$textValue,$textValue2"
+-                            } else {
+-                                tableText = textValue
+-                            }
+-                        }
+-                        EditCell(text = tableText, weight = wordSpaces[2] / 5 * 3)
+-                    } else if (elem.outCol == "購入者PCメールアカウントSHA2ハッシュ") {
+-                        val textValue = outputNumStrings.get(corCols.firstIndex { it == "購入者PCメールアカウントハッシュ" })
+-                        EditCell(text = textValue, weight = wordSpaces[2] / 5 * 3)
+-                        validation = outputNumStrings.update(index, textValue, dataSize)
+-                    } else {
+-                        EditCell(text = "", weight = wordSpaces[2] / 5 * 3)
+-                    }
+-                } else {
+-                    val editValueAfter = EditCell(text = outputNumStrings.get(index), weight = wordSpaces[2] / 5 * 3)
+-                    if (elem.outCol == "受付番号" && outputNumStrings.get(index) != editValueAfter) {  // for "加盟店管理ID"
+-                        manageID = editValueAfter + "--selected"
+-                    }
+-                    validation = outputNumStrings.update(index, editValueAfter, dataSize)
+-                    if (isValidNumOrComma(dataSize, editValueAfter)) {
+-                        val orderNums = outputNumStrings.get(index).split(",").map { it.trim() }
+-                        lastOutputNum = orderNums[orderNums.size - 1].toInt()
+-                        exValue = data[sampleDataNum][dataColumns[lastOutputNum]].toString()
+-                        outputValue = ""
+-                        for (orderNum in orderNums) {
+-                            outputValue += data[sampleDataNum][dataColumns[orderNum.toInt()]].toString()
+-                        }
+-                    }
+-                }
+-
+-                // Setting
+-                var editValueAfter = ""
+-                if (elem.setting.size > 1) {
+-                    if (elem.outCol in listOf("申請日時", "目視審査締切日時", "初回支払期限日")) {
+-                        val dayFormats = getDayFormats()
+-                        val settingTmp = elem.setting
+-                        for ((index, dayFormat) in elem.setting.withIndex()) {
+-                            if (exValue.matches(dayFormats[dayFormat]!!)) {
+-                                // 近そうなものを先頭にする
+-                                Collections.swap(settingTmp, 0, index)
+-                                break
+-                            }
+-                        }
+-                        pullSelected = pullDownCell(setting = settingTmp, weight = wordSpaces[3] / 5)
+-                        if (elem.outCol != "申請日時" && "--selected" !in pullSelected) {
+-                            pullSelected = ""  // 初回
+-                        }
+-                        editValueAfter = EditCell(text = pullSelected, weight = wordSpaces[3] / 5 * 4)
+-                        outputSettingStrings.update(index, pullSelected)
+-                        if (elem.outCol == "申請日時") {  // for 決済日時
+-                            daySelected = pullSelected
+-                        }
+-                    } else {
+-                        pullSelected = pullDownCell(setting = elem.setting, weight = wordSpaces[3] / 5)
+-                        editValueAfter = EditCell(text = pullSelected, weight = wordSpaces[3] / 5 * 4)
+-                        if (elem.outCol == "モデルID") {
+-                            modelSelected = pullSelected
+-                        }
+-                    }
+-                } else if (elem.outCol == "決済日時") {
+-                    TableCell(text = daySelected, weight = wordSpaces[3])
+-                    editValueAfter = daySelected
+-                } else if (elem.outCol == "イベント種別") {
+-                    editValueAfter = EditCell(text = "EC", weight = wordSpaces[3])
+-                } else if (elem.outCol == "利用上限金額（与信枠）") {
+-                    editValueAfter = EditCell(text = "99999", weight = wordSpaces[3])
+-                } else if (elem.outCol == "決済ステータス") {
+-                    editValueAfter = EditCell(text = "00", weight = wordSpaces[3])
+-                } else if (elem.outCol in listOf("購入者国コード", "配送先国コード")) {
+-                    editValueAfter = EditCell(text = "JP", weight = wordSpaces[3])
+-                } else if (elem.outCol in listOf("決済金額", "単価")) {
+-                    editValueAfter = EditCell(text = "", weight = wordSpaces[3])
+-                } else if (elem.outCol == "決済方法") {
+-                    outputValue = if ("--selected" in modelSelected) {
+-                        getSettlementModels()[modelSelected.replace("--selected", "")].toString() + "--selected"
+-                    } else {
+-                        "01"
+-                    }
+-                    editValueAfter = EditCell(text = outputValue, weight = wordSpaces[3])
+-                    outputValue = editValueAfter
+-                } else {
+-                    TableCell(text = "", weight = wordSpaces[3])
+-                }
+-                outputSettingStrings.update(index, editValueAfter)
+-
+-                // Column
+-                if (elem.style == "set") {
+-                    TableCell(text = "", weight = wordSpaces[4])
+-                } else {
+-                    TableCell(text = dataColumns[lastOutputNum], weight = wordSpaces[4])
+-                }
+-
+-                // Example
+-                if (elem.style == "set") {
+-                    TableCell(text = "", weight = wordSpaces[5])
+-                } else {
+-                    TableCell(text = exValue, weight = wordSpaces[5])
+-                }
+-
+-                // Output
+-                if (elem.outCol in noOrders || elem.outCol == "加盟店管理ID") {
+-                    TableCell(text = "", weight = wordSpaces[6])
+-                } else {
+-                    if (elem.outCol in listOf("申請日時", "目視審査締切日時")) {
+-                        val (regDate, inputFormat) = getRegDate(outputValue, editValueAfter)
+-                        outputValue = regDate
+-                        if (inputFormat != "---") {
+-                            outputSettingStrings.update(index, inputFormat)
+-                        }
+-                    } else if (elem.outCol == "モデルID") {
+-                        outputValue = outputSettingStrings.get(index)
+-                    }
+-                    if (!validation && elem.style == "req") {
+-                        ErrorCell(text = outputValue, weight = wordSpaces[6])
+-                    } else {
+-                        TableCell(text = outputValue, weight = wordSpaces[6])
+-                    }
+-                }
+-            }
+-        }
+-    }
+-}
+-
+-
+-@Composable
+-fun RowScope.TableCell(
+-    text: String, weight: Float
+-) {
+-    Text(
+-        text = text,
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp)
+-            .background(Color.DarkGray).wrapContentHeight(),
+-        textAlign = TextAlign.Center,
+-        color = Color.White,
+-        maxLines = 3,
+-    )
+-}
+-
+-@Composable
+-fun RowScope.ErrorCell(
+-    text: String, weight: Float
+-) {
+-    Text(
+-        text = text,
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).background(Color.Red)
+-            .wrapContentHeight(),
+-        textAlign = TextAlign.Center,
+-        color = Color.White,
+-        maxLines = 3,
+-    )
+-}
+-
+-
+-@Composable
+-fun RowScope.RequiredTableCell(
+-    text: String, weight: Float
+-) {
+-    Text(
+-        text = text,
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).background(Color.Red)
+-            .wrapContentHeight(),
+-        textAlign = TextAlign.Center,
+-        color = Color.White,
+-        maxLines = 3,
+-    )
+-}
+-
+-@Composable
+-fun RowScope.CondTableCell(
+-    text: String, weight: Float
+-) {
+-    Text(
+-        text = text,
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp)
+-            .background(Color.Magenta).wrapContentHeight(),
+-        textAlign = TextAlign.Center,
+-        color = Color.White,
+-        maxLines = 3,
+-    )
+-}
+-
+-@Composable
+-fun RowScope.SubTableCell(
+-    text: String, weight: Float
+-) {
+-    Text(
+-        text = text,
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).background(Color.Gray)
+-            .wrapContentHeight(),
+-        textAlign = TextAlign.Center,
+-        color = Color.White,
+-        maxLines = 3,
+-    )
+-}
+-
+-@Composable
+-fun RowScope.EditCell(
+-    text: String, weight: Float
+-): String {
+-    var textFieldString by remember {
+-        mutableStateOf(text)
+-    }
+-    if ("--selected" in text) {
+-        textFieldString = text.replace("--selected", "")
+-    }
+-    TextField(
+-        value = textFieldString,
+-        colors = TextFieldDefaults.textFieldColors(
+-            textColor = Color.Red,
+-            backgroundColor = Color.White,
+-            focusedIndicatorColor = Color.Transparent,
+-            unfocusedIndicatorColor = Color.Transparent,
+-            disabledIndicatorColor = Color.Transparent,
+-        ),
+-        placeholder = { Text(text = "csv") },
+-        onValueChange = { textFieldString = it },
+-        keyboardOptions = KeyboardOptions(
+-            capitalization = KeyboardCapitalization.None,
+-            autoCorrect = true,
+-            keyboardType = KeyboardType.Text,
+-            imeAction = ImeAction.Next
+-        ),
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxWidth(),
+-    )
+-    return return when (textFieldString) {
+-        null -> "-1"
+-        else -> textFieldString
+-    }
+-}
+-
+-@Composable
+-fun RowScope.numDownCell(nums: List<Int>, weight: Float): String {
+-    var expanded by remember { mutableStateOf(false) }
+-    val items = mutableListOf<String>()
+-    val itr = nums.listIterator()
+-    var color = Color.DarkGray
+-    var orPullItem = false
+-    while (itr.hasNext()) {
+-        val num = itr.next().toString()
+-        if (num == "-1") {
+-            items.add("")
+-        } else {
+-            items.add(num)
+-            color = Color.Gray
+-            orPullItem = true
+-        }
+-    }
+-    var selectedIndex by remember { mutableStateOf(0) }
+-    var selectedItem by remember { mutableStateOf("") }
+-    if (orPullItem) {
+-        Box(
+-            modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxSize()
+-                .clickable(onClick = { expanded = true }), contentAlignment = Alignment.Center
+-        ) {
+-            Text(
+-                text = "",
+-                modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(50.dp).background(color)
+-                    .wrapContentHeight(),
+-                textAlign = TextAlign.Center,
+-                color = Color.White,
+-                maxLines = 3,
+-            )
+-            DropdownMenu(
+-                expanded = expanded,
+-                onDismissRequest = { expanded = false },
+-                modifier = Modifier.background(Color.White)
+-            ) {
+-                items.forEachIndexed { index, s ->
+-                    DropdownMenuItem(onClick = {
+-                        selectedIndex = index
+-                        expanded = false
+-                        selectedItem = "--selected"
+-                    }) {
+-                        Text(text = s, color = Color.Black)
+-                    }
+-                }
+-            }
+-        }
+-    } else {
+-        Text(
+-            text = "",
+-            modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp)
+-                .background(Color.DarkGray).wrapContentHeight(),
+-            textAlign = TextAlign.Center,
+-            color = Color.White,
+-            maxLines = 3,
+-        )
+-        selectedItem = ""
+-    }
+-    val returnValue = items[selectedIndex] + selectedItem
+-    selectedItem = ""
+-    return returnValue
+-}
+-
+-@Composable
+-fun RowScope.pullDownCell(setting: List<String>, weight: Float): String {
+-    var expanded by remember { mutableStateOf(false) }
+-    var items = setting
+-    var selectedIndex by remember { mutableStateOf(0) }
+-    var selectedItem by remember { mutableStateOf("") }
+-    Box(
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxSize()
+-            .clickable(onClick = { expanded = true }), contentAlignment = Alignment.Center
+-    ) {
+-        Text(
+-            text = "",
+-            modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(50.dp).background(Color.Gray)
+-                .wrapContentHeight(),
+-            textAlign = TextAlign.Center,
+-            color = Color.White,
+-            maxLines = 3,
+-        )
+-        DropdownMenu(
+-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.background(Color.White)
+-        ) {
+-            items.forEachIndexed { index, s ->
+-                DropdownMenuItem(onClick = {
+-                    selectedIndex = index
+-                    expanded = false
+-                    selectedItem = "--selected"
+-                }) {
+-                    Text(text = s, color = Color.Black)
+-                }
+-            }
+-        }
+-    }
+-    val returnValue = items[selectedIndex] + selectedItem
+-    selectedItem = ""
+-    return returnValue
+-}
+-
+-@Composable
+-fun RowScope.pullDownCellWithItem(setting: List<String>, weight: Float): String {
+-    var expanded by remember { mutableStateOf(false) }
+-    var items = setting
+-    var selectedIndex by remember { mutableStateOf(0) }
+-    Box(
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxSize()
+-            .clickable(onClick = { expanded = true }), contentAlignment = Alignment.Center
+-    ) {
+-        Text(
+-            text = items[selectedIndex],
+-            modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(50.dp).background(Color.Gray)
+-                .wrapContentHeight(),
+-            textAlign = TextAlign.Center,
+-            color = Color.White,
+-            maxLines = 3,
+-        )
+-        DropdownMenu(
+-            expanded = expanded, onDismissRequest = { expanded = false }, modifier = Modifier.background(Color.White)
+-        ) {
+-            items.forEachIndexed { index, s ->
+-                DropdownMenuItem(onClick = {
+-                    selectedIndex = index
+-                    expanded = false
+-                }) {
+-                    Text(text = s, color = Color.Black)
+-                }
+-            }
+-        }
+-    }
+-    return items[selectedIndex]
+-}
+-
+-@Composable
+-fun RowScope.dataSelectButton(sampleDataNum: Int, maxNum: Int, weight: Float): Int {
+-    var sampleDataNumTmp by remember { mutableStateOf(sampleDataNum) }
+-    Box(
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxSize()
+-            .clickable(onClick = {
+-                if (sampleDataNumTmp >= maxNum) {
+-                    sampleDataNumTmp = 0
+-                } else {
+-                    sampleDataNumTmp = sampleDataNum + 1
+-                }
+-            }), contentAlignment = Alignment.Center
+-    ) {
+-        var text = sampleDataNumTmp + 1
+-        Text(
+-            text = "Data-$text",
+-            modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(50.dp).background(Color.Gray)
+-                .wrapContentHeight(),
+-            textAlign = TextAlign.Center,
+-            color = Color.White,
+-            maxLines = 3,
+-        )
+-    }
+-    return sampleDataNumTmp
+-}
+-
+-@Composable
+-fun RowScope.outputButton(
+-    correspondences: List<correspondence>,
+-    outputNumStrings: List<String>,
+-    outputSettingStrings: List<String>,
+-    examUpperNumStrings: String,
+-    isColumnSet: Boolean,
+-    weight: Float,
+-) {
+-    Box(
+-        modifier = Modifier.border(1.dp, Color.Black).weight(weight).padding(3.dp).height(50.dp).fillMaxSize()
+-            .clickable(onClick = {
+-                output(
+-                    correspondences,
+-                    outputNumStrings,
+-                    outputSettingStrings,
+-                    examUpperNumStrings,
+-                    isColumnSet,
+-                )
+-            }), contentAlignment = Alignment.Center
+-    ) {
+-        Text(
+-            text = "XML出力",
+-            modifier = Modifier.border(1.dp, Color.Black).fillMaxWidth().height(50.dp).background(Color.Gray)
+-                .wrapContentHeight(),
+-            textAlign = TextAlign.Center,
+-            color = Color.White,
+-            maxLines = 3,
+-        )
+-    }
+-}
+-
+-// 日時のアウトプット確認用
+-fun getRegDate(input: String, format: String): RegDate {
+-    var regDate = ""
+-    val dateNums = mutableListOf("2000", "00", "00", "00", "00", "00")
+-    var formatTmp = format
+-    var inputFormat = ""
+-    if (input == "---") {
+-        return RegDate("---", format)
+-    }
+-    for (ch in input) {
+-        val char = ch.toString()
+-        if (isNumeric(char)) {
+-            if (formatTmp.substring(0, 1) == "y") {
+-                if (dateNums[0] == "2000") {
+-                    dateNums[0] = char
+-                } else {
+-                    dateNums[0] += char
+-                }
+-                inputFormat += "y"
+-            } else if (formatTmp.substring(0, 1) == "M") {
+-                if (dateNums[1] == "00") {
+-                    dateNums[1] = char
+-                } else {
+-                    dateNums[1] += char
+-                }
+-                inputFormat += "M"
+-            } else if (formatTmp.substring(0, 1) == "d") {
+-                if (dateNums[2] == "00") {
+-                    dateNums[2] = char
+-                } else {
+-                    dateNums[2] += char
+-                }
+-                inputFormat += "d"
+-            } else if (formatTmp.substring(0, 1) == "H") {
+-                if (dateNums[3] == "00") {
+-                    dateNums[3] = char
+-                } else {
+-                    dateNums[3] += char
+-                }
+-                inputFormat += "H"
+-            } else if (formatTmp.substring(0, 1) == "m") {
+-                if (dateNums[4] == "00") {
+-                    dateNums[4] = char
+-                } else {
+-                    dateNums[4] += char
+-                }
+-                inputFormat += "m"
+-            } else if (formatTmp.substring(0, 1) == "s") {
+-                if (dateNums[5] == "00") {
+-                    dateNums[5] = char
+-                } else {
+-                    dateNums[5] += char
+-                }
+-                inputFormat += "s"
+-            }
+-            formatTmp = formatTmp.drop(1)
+-        } else {
+-            formatTmp = formatTmp.drop(1)
+-            inputFormat += char
+-        }
+-        if (formatTmp == "") {
+-            break
+-        }
+-    }
+-    for ((idx, num) in dateNums.withIndex()) {
+-        when (idx) {
+-            0, 1 -> {
+-                regDate += num
+-                regDate += "/"
+-            }
+-
+-            2 -> {
+-                regDate += num
+-                regDate += " "
+-            }
+-
+-            3, 4 -> {
+-                regDate += num
+-                regDate += ":"
+-            }
+-
+-            5 -> {
+-                regDate += num
+-            }
+-        }
+-    }
+-    return RegDate(regDate, inputFormat)
+-}
+-
+-data class RegDate(val regDate: String, val inputFormat: String)
+-
+-// 取得位置のモデル
+-class OutputNumsStrings(correspondences: List<correspondence>) {
+-    var outputNumStrings = mutableListOf<String>()
+-
+-    init {
+-        outputNumStrings = correspondences.map {
+-            if (it.sugNums.toList().size == 0 || it.style == "sub" || it.style == "") "" else it.sugNums.toList()[0].toString()
+-        }.toMutableList()
+-    }
+-
+-    fun update(idx: Int, numsString: String, dataSize: Int): Boolean {
+-        var numStringTmp = numsString
+-        if ("--selected" in numsString) {
+-            numStringTmp = numsString.replace("--selected", "")
+-        }
+-        outputNumStrings[idx] = numsString
+-        if (idx in listOf(8, 11, 12, 15, 42)) {
+-            return true
+-        } else {
+-            if (isValidNumOrComma(dataSize, numStringTmp)) {
+-                return true
+-            }
+-        }
+-        return false
+-    }
+-
+-    fun get(idx: Int): String {
+-        return outputNumStrings[idx]
+-    }
+-
+-    fun getAll(): List<String> {
+-        return outputNumStrings
+-    }
+-}
+-
+-// 表示値のモデル
+-class OutputSettingStrings(correspondences: List<correspondence>) {
+-    var outputSettingStrings = MutableList(correspondences.size) { "" }
+-
+-    fun update(idx: Int, numsString: String) {
+-        var numStringTmp = numsString
+-        if ("--selected" in numsString) {
+-            numStringTmp = numsString.replace("--selected", "")
+-        }
+-        outputSettingStrings[idx] = numsString
+-    }
+-
+-    fun get(idx: Int): String {
+-        return outputSettingStrings[idx]
+-    }
+-
+-    fun getAll(): List<String> {
+-        return outputSettingStrings
+-    }
+-}
+-
+-// メインテストコード
+-fun EditApp() = singleWindowApplication(
+-    title = "Edit Screen", state = WindowState(width = 1000.dp, height = 600.dp)
+-) {
+-    var isOpenEditWindow by remember { mutableStateOf(true) }
+-    var filePath by remember { mutableStateOf("") }
+-    var rawData by remember { mutableStateOf(arrayListOf<List<String>>()) }
+-//    filePath = "kotlin_sample/V3/SP00FUJISAKI/order20220916_174559_test (1).csv"
+-//    filePath = "kotlin_sample/V3/SP00ONEPALETTE/test_order_2022-10-28 19_04_59 +0900.csv"
+-    filePath = "kotlin_sample/V3/SP00COMEDICAL/サンプルデータ～配送明細.csv"
+-//    filePath = "kotlin_sample/V3/SP00EUCALY/order_20221006152145.csv"
+-    rawData = getRawData(filePath)
+-    if (isOpenEditWindow) {
+-        EditWindow(rawData, filePath)
+-    }
+-}
+-
+-fun main() {
+-    EditApp()
+-}
+\ No newline at end of file
+Index: src/main/kotlin/output.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/output.kt b/src/main/kotlin/output.kt
+deleted file mode 100644
+--- a/src/main/kotlin/output.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ /dev/null	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
+@@ -1,228 +0,0 @@
+-import org.w3c.dom.Document
+-import org.w3c.dom.Node
+-import java.io.File
+-import java.io.StringWriter
+-import javax.xml.parsers.DocumentBuilderFactory
+-import javax.xml.transform.OutputKeys
+-import javax.xml.transform.TransformerFactory
+-import javax.xml.transform.dom.DOMSource
+-import javax.xml.transform.stream.StreamResult
+-
+-
+-fun testOutput() {
+-    val text = xml {
+-        "CsvConfigDto"(
+-            "xmlns:xsi" to "http://www.w3.org/2001/XMLSchema-instance",
+-            "xmlns:xsd" to "http://www.w3.org/2001/XMLSchema"
+-        ) {
+-            "列名有無" { true }
+-            "主キー" { 2 }
+-            "審査件数上限" { 5000 }
+-            "列名有無" {
+-                "列名有無" {
+-                    "EventItemDto" {
+-                        "列名" {
+-                            "型"("xmlns:xsi" to "ReplaceColumn") {
+-                                "取得位置" { 2 }
+-                                "出力フォーマット" { }
+-                            }
+-                            "モード" { "無視" }
+-                        }
+-                    }
+-                }
+-
+-            }
+-        }
+-    }.toString()
+-
+-    val file = File("setting.xml")
+-    file.writeText(text)
+-}
+-
+-fun xml(block: NODE.() -> Unit): NODE = NODE(newDocument()).also { it.block() }
+-
+-private fun newDocument(): Document = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument()
+-
+-class NODE(
+-    private val node: Node
+-) {
+-    private val document: Document = if (node is Document) node else node.ownerDocument
+-
+-    operator fun String.invoke(vararg attr: Pair<String, String>, block: NODE.() -> Any = { Unit }) {
+-        val child = document.createElement(this).also { node.appendChild(it) }
+-        attr.forEach { child.setAttribute(it.first, it.second) }
+-        NODE(child).block().let { if (it is String) child.textContent = it }
+-    }
+-
+-    override fun toString(): String {
+-        val sw = StringWriter()
+-        TransformerFactory.newInstance().newTransformer().also {
+-            it.setOutputProperty(OutputKeys.INDENT, "yes")
+-            it.transform(DOMSource(document), StreamResult(sw))
+-        }
+-        return sw.toString()
+-    }
+-}
+-
+-
+-fun output(
+-    correspondences: List<correspondence>,
+-    outputNumStrings: List<String>,
+-    outputSettingStrings: List<String>,
+-    examUpperNumString: String,
+-    isColumnSet: Boolean,
+-) {
+-    val outputColumns = correspondences.map { it.outCol }
+-    val dateColumns = listOf(
+-        "申請日時", "目視審査締切日時", "決済日時", "配送希望日時",
+-        "初回支払期限日", "購入者生年月日", "配送先生年月日", "店子登録日",
+-    )
+-    val timeColumns = listOf(
+-        "申請日時", "目視審査締切日時", "決済日時", "配送希望日時",
+-    )
+-    val stringColumns =
+-        listOf("モデルID", "イベント種別", "利用上限金額（与信枠）", "決済ステータス", "決済方法", "購入者国コード", "配送先国コード")
+-    val telColumns = listOf(
+-        "購入者郵便番号",
+-        "購入者固定電話番号",
+-        "購入者携帯電話番号",
+-        "配送先郵便番号",
+-        "配送先固定電話番号",
+-        "配送先携帯電話番号"
+-    )
+-    val margeStringColumns = listOf("購入者市区町村", "購入者その他", "配送先市区町村", "配送先その他")
+-    val nameCountColumns = listOf("購入者氏名文字数", "配送先氏名文字数")
+-    val kanjiCountColumns = listOf("購入者氏名漢字数", "配送先氏名漢字数")
+-    val hiraganaCountColumns = listOf("購入者氏名ひらがな数", "配送先氏名ひらがな数")
+-    val katakanaCountColumns = listOf("購入者氏名カタカナ数", "配送先氏名カタカナ数")
+-    val alphabetCountColumns = listOf("購入者氏名アルファベット数", "配送先氏名アルファベット数")
+-    val otherCountColumns = listOf("購入者氏名上記以外文字数", "配送先氏名上記以外文字数")
+-    val separateByDictionaryColumns = listOf("購入者氏名辞書存在", "配送先氏名辞書存在")
+-    val priceColumns = listOf("決済金額", "単価")
+-    val mode = "無視"
+-    val nullPosition = "-1"
+-    val zeroPosition = "0"
+-    val onePosition = "1"
+-    val separeteString = "@"
+-    val outputFormatTime = "yyyy/MM/dd HH:mm:ss"
+-    val outputFormatDate = "yyyy/MM/dd"
+-    val isHash = "true"
+-    val hashTypes = listOf("TYPE_A", "TYPE_B")
+-    val creditBinCode = "0-5"
+-    val text = xml {
+-        "CsvConfigDto"(
+-            "xmlns:xsi" to "http://www.w3.org/2001/XMLSchema-instance",
+-            "xmlns:xsd" to "http://www.w3.org/2001/XMLSchema",
+-        ) {
+-            "列名有無" { isColumnSet.toString() }
+-            "主キー" { outputNumStrings[0] }
+-            "審査件数上限" { examUpperNumString }
+-            "列情報" {
+-                repeat(outputColumns.size) {
+-                    "EventItemDto" {
+-                        "列名" { outputColumns[it] }
+-                        if (outputColumns[it] in dateColumns) {
+-                            "型"("xsi:type" to "DateColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                                "フォーマット" { if (outputSettingStrings[it] == "") nullPosition else outputSettingStrings[it] }
+-                                if (outputColumns[it] in timeColumns) {
+-                                    "出力フォーマット" { outputFormatTime }
+-                                } else {
+-                                    "出力フォーマット" { outputFormatDate }
+-                                }
+-                            }
+-                        } else if (outputColumns[it] in stringColumns) {
+-                            "型"("xsi:type" to "StringColumn") {
+-                                "表示値" { outputSettingStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in priceColumns) {
+-                            if (outputSettingStrings[it] == "") {
+-                                "型"("xsi:type" to "PriceColumn") {
+-                                    "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                                }
+-                            } else {
+-                                "型"("xsi:type" to "StringColumn") {
+-                                    "表示値" { if (outputSettingStrings[it] == "") nullPosition else outputSettingStrings[it] }
+-                                }
+-                            }
+-                        } else if (outputColumns[it] in telColumns) {
+-                            "型"("xsi:type" to "TelColumns") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in margeStringColumns) {
+-                            "型"("xsi:type" to "MargeStringColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in nameCountColumns) {
+-                            "型"("xsi:type" to "NameCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in kanjiCountColumns) {
+-                            "型"("xsi:type" to "KanjiCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in hiraganaCountColumns) {
+-                            "型"("xsi:type" to "HiraganaCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in katakanaCountColumns) {
+-                            "型"("xsi:type" to "KatakanaCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in alphabetCountColumns) {
+-                            "型"("xsi:type" to "AlphabetCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in otherCountColumns) {
+-                            "型"("xsi:type" to "OtherCountColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else if (outputColumns[it] in separateByDictionaryColumns) {
+-                            "型"("xsi:type" to "SeparateByDictionaryColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                            }
+-                        } else {
+-                            "型"("xsi:type" to "ReplaceColumn") {
+-                                "取得位置" { if (outputNumStrings[it] == "") nullPosition else outputNumStrings[it] }
+-                                if (outputColumns[it] == "クレジットBINコード") {
+-                                    "出力フォーマット" { creditBinCode }
+-                                } else {
+-                                    "出力フォーマット" { nullPosition }
+-                                }
+-                            }
+-                            if ("ハッシュ" in outputColumns[it]) {
+-                                "ハッシュ" { isHash }
+-                                "HashAlgorithm" { if ("SHA2" in outputColumns[it]) hashTypes[1] else hashTypes[0] }
+-                            }
+-                            if ("正規化済み" in outputColumns[it]) {
+-                                "正規化"("xsi:type" to "NameNormalizer") {}
+-                            }
+-                            if ("メール" in outputColumns[it]) {
+-                                "分割"("xsi:type" to "StringDivider") {
+-                                    "取得位置" { if ("ドメイン" in outputColumns[it]) onePosition else zeroPosition }
+-                                    "分割文字列" { separeteString }
+-                                }
+-                            }
+-                        }
+-                        "モード" { mode }
+-                    }
+-                }
+-            }
+-        }
+-    }.toString().replace(" encoding=\"UTF-8\" standalone=\"no\"", "").replace(
+-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"",
+-        "// ",
+-    ).replace(
+-        "<出力フォーマット>-1</出力フォーマット>",
+-        "<出力フォーマット></出力フォーマット>",
+-    ).replace(
+-        "<フォーマット>-1</フォーマット>",
+-        "<フォーマット></フォーマット>",
+-    )
+-    val file = File("setting.xml")
+-    file.writeText(text)
+-}
+-
+-fun main() {
+-    testOutput()
+-}
+\ No newline at end of file
+Index: src/main/kotlin/data.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/data.kt b/src/main/kotlin/data.kt
+deleted file mode 100644
+--- a/src/main/kotlin/data.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ /dev/null	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
+@@ -1,505 +0,0 @@
+-import java.io.File
+-import java.io.InputStream
+-import java.nio.charset.Charset
+-
+-fun testCorrespondences() {  // メインテストコード
+-    var count = 1
+-    run lit@{
+-        File("kotlin_sample/V3/").walk().forEach {
+-            if (it.name.endsWith(".csv") && it.name.startsWith("【ハッシュ化済み】").not()) {
+-                if (it.name == "order20220916_174559_test (1).csv") {
+-                    val sampleData = readCsv(it)
+-                    var correspondences = getCorrespondences(sampleData)
+-                    correspondences.forEach {
+-                        println(listOf(it.cc, it.outCol, it.sugNums))
+-                    }
+-                    if (count > 1) return@lit
+-                    count += 1
+-                } else {
+-//                    println(it.name)
+-                }
+-            }
+-        }
+-    }
+-}
+-
+-fun getCorrespondences(sampleData: List<Map<String, String>>): List<correspondence> {  //　データ対応処理部分
+-    val correspondences = mutableListOf<correspondence>()
+-    val inCols = sampleData[0].keys
+-    // セル名、セルスタイル、自動選択候補、設定候補
+-    var outCol = "受付番号"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "申請日時"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "モデルID"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店管理ID"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "デバイス情報"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "IPアドレス"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "Cookie"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "イベント種別"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "目視審査締切日時"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "媒体種別"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "利用上限金額（与信枠）"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "決済ステータス"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "決済日時"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "決済金額"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "決済方法"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "クレジットカード番号ハッシュ"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "クレジットカード有効期限"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "クレジットカード支払回数"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "クレジットカードBINコード"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "オーソリ結果コード"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "オーソリ結果コメント"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "カード発行元"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "初回支払期限日"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者会員ID"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者生年月日"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者性別"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者名前ハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者名前SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者正規化済み名前ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者正規化済み名前SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者苗字ハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者苗字SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者正規化済み苗字ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者正規化済み苗字SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名文字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名漢字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名ひらがな数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名カタカナ数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名アルファベット数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名上記以外文字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者氏名辞書存在"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者国コード"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者郵便番号"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者都道府県"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者市区町村"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者その他"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者固定電話番号"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者携帯電話番号"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者PCメールアカウントハッシュ"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者PCメールアカウントSHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者PCメールドメイン"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者携帯メールアカウントハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者携帯メールアカウントSHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者携帯メールドメイン"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者会社名"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者部署名"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "購入者役職"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "顧客分類"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先会員ID"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先生年月日"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先性別"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先名前ハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先名前SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先正規化済み名前ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先正規化済み名前SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先苗字ハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先苗字SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先正規化済み苗字ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先正規化済み苗字SHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名文字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名漢字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名ひらがな数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名カタカナ数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名アルファベット数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名上記以外文字数"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先氏名辞書存在"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先国コード"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先郵便番号"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先都道府県"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先市区町村"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先その他"
+-    correspondences.add(correspondence(outCol, "req", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先固定電話番号"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先携帯電話番号"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先メールアカウントハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先メールアカウントSHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先メールドメイン"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先携帯メールアカウントハッシュ"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先携帯メールアカウントSHA2ハッシュ"
+-    correspondences.add(correspondence(outCol, "set", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先携帯メールドメイン"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先会社名"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先部署名"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送先役職"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送希望日時"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送希望有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "配送業者"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店店子ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子上限金額"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "利用者与信枠補正率"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子URL"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子登録日"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子Webサイト識別ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "店子Webサイト識別パスワード"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "sub", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "加盟店商品ID"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "単価"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "数量"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "商品名"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    outCol = "在庫有無"
+-    correspondences.add(correspondence(outCol, "", getSugNums(outCol, inCols), getSetting(outCol)))
+-    return correspondences
+-}
+-
+-fun getSugNums(outCol: String, inCols: Set<String>): MutableSet<Int> {
+-    // データのカラムと出力のカラムの名前から候補を探す
+-    val sugNums = mutableSetOf<Int>()
+-    var searchWords = mutableListOf<String>()
+-    if (outCol == "受付番号") {
+-        searchWords += listOf("注文番号", "受注番号", "ID", "ＩＤ")
+-    } else if (outCol in listOf("申請日時", "目視審査締切日時")) {
+-        searchWords += listOf("日", "時間")
+-    } else if (outCol == "デバイス情報") {
+-        searchWords += listOf("経路")
+-    } else if (outCol == "決済金額") {
+-        searchWords += listOf("額", "合計")
+-    } else if (outCol == "購入者会員ID") {
+-        searchWords += listOf("番号", "ID")
+-    } else if (outCol == "購入者名前ハッシュ") {
+-        searchWords += listOf("名", "購入者", "注文者")
+-    } else if (outCol == "購入者苗字ハッシュ") {
+-        searchWords += listOf("性", "苗", "購入者", "注文者")
+-    } else if (outCol == "購入者郵便番号") {
+-        searchWords += listOf("郵便番号")
+-    } else if (outCol == "購入者都道府県") {
+-        searchWords += listOf("都道府県", "住所")
+-    } else if (outCol == "購入者その他") {
+-        searchWords += listOf("住所", "市", "区", "建物", "町", "番地")
+-    } else if (outCol == "購入者PCメールアカウントハッシュ") {
+-        searchWords += listOf("メール")
+-    } else if (outCol == "購入者PCメールドメイン") {
+-        searchWords += listOf("メール")
+-    } else if (outCol == "購入者PCメールドメイン") {
+-        searchWords += listOf("郵便番号")
+-    } else if (outCol == "配送先都道府県") {
+-        searchWords += listOf("都道府県", "住所")
+-    } else if (outCol == "配送先その他") {
+-        searchWords += listOf("お届け先市区", "配送先住所", "配送先 市区", "送付先住所２", "市区", "住所")
+-    }
+-    for ((index, elem) in inCols.withIndex()) {
+-        searchWords.forEach { column ->
+-            if (Regex(column).containsMatchIn(elem)) {
+-                sugNums.add(index + 1)
+-            }
+-        }
+-    }
+-    return sugNums
+-}
+-
+-fun getSetting(outCol: String): List<String> {
+-    // 設定候補
+-    var setting = mutableListOf<String>()
+-    if (outCol == "モデルID") {
+-        setting += getSettlementModels().keys
+-    } else if (outCol in listOf("申請日時", "目視審査締切日時", "初回支払期限日")) {
+-        setting += getDayFormats().keys
+-    } else {
+-        setting += listOf(
+-            ""
+-        )
+-    }
+-    return setting
+-}
+-
+-class globalCc {
+-    // corのナンバリング
+-    var cc: Int = 0
+-
+-    companion object {
+-        private var instance: globalCc? = null
+-        fun getInstance(): globalCc {
+-            if (instance == null) instance = globalCc()
+-            return instance!!
+-        }
+-    }
+-}
+-
+-class correspondence(var outCol: String, var style: String, var sugNums: Set<Int>, var setting: List<String>) {
+-    // corのモデル部分
+-    var cc = 0
+-
+-    init {
+-        val gc = globalCc.getInstance()
+-        gc.cc += 1
+-        cc = gc.cc
+-    }
+-
+-    constructor(
+-        cc: Int,
+-        column: String,
+-        style: String,
+-        sugNums: Set<Int>,
+-        setting: List<String>,
+-    ) : this(column, style, sugNums, setting) {
+-        this.cc = cc
+-        this.style = style
+-        this.outCol = column
+-        this.sugNums = sugNums
+-        this.setting = setting
+-    }
+-}
+-
+-fun getDayFormats(): Map<String, Regex> {
+-    // 日時のフォーマット
+-    return mapOf(
+-        // 自動検索
+-        "yyyy/MM/dd HH:mm:ss.ffffff" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}$"),
+-        "yyyy/MM/dd HH:mm:ss.fff" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}$"),
+-        "yyyy/MM/dd HH:mm:ss" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy/MM/dd H:mm:ss" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy/MM/dd HH*mm" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy/MM/dd H*mm" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]:[0-9]{2}$"),
+-        "yyyy/MM/dd H*m" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]:[0-9]$"),
+-        "yyyy/MM/dd HH" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2} [0-9]{2}}$"),
+-        "yyyy/MM/dd" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]{2}$"),
+-        "yyyy/MM/d" to Regex("^[0-9]{4}/[0-9]{2}/[0-9]$"),
+-        "yyyy/MM" to Regex("^[0-9]{4}/[0-9]{2}$"),
+-        "yyyy-MM-dd HH:mm:ss.ffffff" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{6}$"),
+-        "yyyy-MM-dd HH:mm:ss.fff" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}$"),
+-        "yyyy-MM-dd HH:mm:ss" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy-MM-dd H:mm:ss" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy-MM-dd HH*mm" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}$"),
+-        "yyyy-MM-dd H*mm" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]:[0-9]{2}$"),
+-        "yyyy-MM-dd H*m" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]:[0-9]$"),
+-        "yyyy-MM-dd HH" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}}$"),
+-        "yyyy-MM-dd" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]{2}$"),
+-        "yyyy-MM-d" to Regex("^[0-9]{4}-[0-9]{2}-[0-9]$"),
+-        "yyyy-MM" to Regex("^[0-9]{4}/[0-9]{2}$"),
+-        "yyyy*MM*dd*HH*mm*ss*ffffff" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*HH*mm*ss*fff" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*HH*mm*ss" to Regex("^[0-9]{4}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*H*mm*ss" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*HH*mm" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*H*mm" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*H*m" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd*HH" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*dd" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM*d" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-        "yyyy*MM" to Regex("^[0-9]{2}[^0-9]+[0-9]{2}[^0-9]+[0-9]{2}$"),
+-    )
+-}
+-
+-fun getSettlementModels(): Map<String, String> {
+-    // モデルと決済方法の対応
+-    val settlementModel = mapOf(
+-        "ATB_01" to "01",
+-        "TNB_01" to "01",
+-        "CRD_01" to "02",
+-        "DBK_01" to "03",
+-        "RNT_01" to "02",
+-        "RULE_01" to "01",
+-        "FC_CRD_01" to "02",
+-        "" to "",
+-    )
+-    return settlementModel
+-}
+-
+-fun readCsv(dataFile: File): List<Map<String, String>> {
+-    // データの読み込み
+-    val reader = dataFile.inputStream().bufferedReader(Charset.forName("Shift-jis"))
+-    var header = reader.readLine().split(",(?=(?:[^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*\$)".toRegex())
+-        .map { it.replace("\"", "") }
+-    return reader.lineSequence().filter { it.isNotBlank() }.map {
+-        val value = it.split(",(?=(?:[^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*\$)".toRegex())
+-        header.zip(value.map { it.replace("\"", "") }).toMap()
+-    }.toList()
+-}
+-
+-fun main() {
+-    testCorrespondences()
+-}
+Index: src/main/kotlin/WindowsManageableSample.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/WindowsManageableSample.kt b/src/main/kotlin/WindowsManageableSample.kt
+deleted file mode 100644
+--- a/src/main/kotlin/WindowsManageableSample.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ /dev/null	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
+@@ -1,18 +0,0 @@
+-import androidx.compose.material.Button
+-import androidx.compose.material.Text
+-import androidx.compose.ui.window.Window
+-import androidx.compose.ui.window.application
+-import ui.RenderWindows
+-import ui.WindowController
+-
+-
+-fun main() = application {
+-    val windowController = WindowController()
+-
+-    Window(onCloseRequest = ::exitApplication) {
+-        Button(onClick = { windowController.openNewPageWindow("firstMemo") }) {
+-            Text("Open FirstMemo")
+-        }
+-    }
+-    RenderWindows(windowController)
+-}
+Index: src/main/kotlin/temp.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/temp.kt b/src/main/kotlin/temp.kt
+deleted file mode 100644
+--- a/src/main/kotlin/temp.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ /dev/null	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
+@@ -1,19 +0,0 @@
+-import java.io.File
+-
+-fun main() {
+-    val filePath = "test.mp3"
+-    val file = File(filePath)
+-
+-    // ファイルが存在するか確認
+-    if (!file.exists()) {
+-        println("$filePath は存在しません。")
+-        return
+-    }
+-
+-    // ファイルのサイズを表示
+-    println("$filePath のサイズ: ${file.length()} バイト")
+-
+-    // ファイルを読み込み、最初の10バイトを表示
+-    val bytes = file.readBytes().take(10).toByteArray()
+-    println("最初の10バイト: ${bytes.joinToString(", ") { it.toString() }}")
+-}
+\ No newline at end of file
+Index: src/main/kotlin/model/Line.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package model\n\ndata class Line(\n    var valueString: String\n) {\n    fun getValue(): String {\n        return valueString\n    }\n\n    fun edit(newValue: String) {\n        valueString = newValue\n    }\n\n    fun dividedStringsByLinks(): List<SubString> {\n        val pattern = \"\\\\[([^\\\\[\\\\]]*)\\\\]\"\n        val regex = Regex(pattern)\n\n        val subStrings = mutableListOf<SubString>()\n        var lastIndex = 0\n\n        for (matchResult in regex.findAll(valueString)) {\n            // Add the portion of the string before the match as a non-link SubString\n            val nonLinkText = valueString.substring(lastIndex, matchResult.range.first)\n            if (nonLinkText.isNotEmpty()) {\n                subStrings.add(SubString(nonLinkText))\n            }\n\n            // Add the matched text as a link SubString\n            val linkText = matchResult.groupValues[1]\n            subStrings.add(SubString(linkText, isLinkText = true))\n\n            lastIndex = matchResult.range.last + 1\n        }\n\n        // Add any remaining non-link portion of the string\n        if (lastIndex < valueString.length) {\n            val nonLinkText = valueString.substring(lastIndex)\n            subStrings.add(SubString(nonLinkText))\n        }\n\n        // Print the resulting SubString list\n        return subStrings\n    }\n    private fun dividedStringsByLinks2(): List<SubString> {//正規表現を使わない実装\n        val result = mutableListOf<SubString>()\n        val buffer = StringBuilder()\n        var isInsideBrackets = false\n\n        for (i in valueString.indices) {\n            val char = valueString[i]\n\n            when (char) {\n                '[' -> {\n                    if (!isInsideBrackets) {\n                        if (buffer.isNotEmpty()) {\n                            result.add(SubString(buffer.toString(), false))\n                            buffer.clear()\n                        }\n                        isInsideBrackets = true\n                    } else {\n                        buffer.append(char)\n                    }\n                }\n                ']' -> {\n                    if (isInsideBrackets) {\n                        result.add(SubString(buffer.toString(), true))\n                        buffer.clear()\n                        isInsideBrackets = false\n                    } else {\n                        buffer.append(char)\n                    }\n                }\n                else -> buffer.append(char)\n            }\n        }\n\n        // 最後の部分を追加\n        if (buffer.isNotEmpty()) {\n            result.add(SubString(buffer.toString(), isInsideBrackets))\n        }\n\n        return result\n    }\n}\n\ndata class SubString(\n    val text: String,\n    val isLinkText: Boolean = false\n)
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/model/Line.kt b/src/main/kotlin/model/Line.kt
+--- a/src/main/kotlin/model/Line.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/src/main/kotlin/model/Line.kt	(date 1694440708557)
+@@ -41,6 +41,7 @@
+         // Print the resulting SubString list
+         return subStrings
+     }
++
+     private fun dividedStringsByLinks2(): List<SubString> {//正規表現を使わない実装
+         val result = mutableListOf<SubString>()
+         val buffer = StringBuilder()
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ExternalStorageConfigurationManager\" enabled=\"true\" />\n  <component name=\"FrameworkDetectionExcludesConfiguration\">\n    <file type=\"web\" url=\"file://$PROJECT_DIR$\" />\n  </component>\n  <component name=\"ProjectRootManager\" version=\"2\" languageLevel=\"JDK_19\" default=\"true\" project-jdk-name=\"corretto-19\" project-jdk-type=\"JavaSDK\">\n    <output url=\"file://$PROJECT_DIR$/out\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/.idea/misc.xml	(date 1694440708529)
+@@ -1,10 +1,9 @@
+-<?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ExternalStorageConfigurationManager" enabled="true" />
+   <component name="FrameworkDetectionExcludesConfiguration">
+     <file type="web" url="file://$PROJECT_DIR$" />
+   </component>
+-  <component name="ProjectRootManager" version="2" languageLevel="JDK_19" default="true" project-jdk-name="corretto-19" project-jdk-type="JavaSDK">
++  <component name="ProjectRootManager" version="2" languageLevel="JDK_20" default="true" project-jdk-name="corretto-20" project-jdk-type="JavaSDK">
+     <output url="file://$PROJECT_DIR$/out" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/vcs.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"VcsDirectoryMappings\">\n    <mapping directory=\"$PROJECT_DIR$\" vcs=\"Git\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/vcs.xml b/.idea/vcs.xml
+--- a/.idea/vcs.xml	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/.idea/vcs.xml	(date 1694440708530)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="VcsDirectoryMappings">
+-    <mapping directory="$PROJECT_DIR$" vcs="Git" />
++    <mapping directory="" vcs="Git" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: localfiles/firstMemo.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>this is your first memo\ngo to [secondMemo]
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/localfiles/firstMemo.txt b/localfiles/firstMemo.txt
+--- a/localfiles/firstMemo.txt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/localfiles/firstMemo.txt	(date 1694440708542)
+@@ -1,2 +1,2 @@
+ this is your first memo
+-go to [secondMemo]
+\ No newline at end of file
++go to [seco]
+\ No newline at end of file
+Index: localfiles/firstMemo2.txt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>this is your first memo!!
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/localfiles/firstMemo2.txt b/localfiles/firstMemo2.txt
+--- a/localfiles/firstMemo2.txt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/localfiles/firstMemo2.txt	(date 1694440708545)
+@@ -1,1 +1,8 @@
+-this is your first memo!!
+\ No newline at end of file
++this is your first memo!!
++[srsgks
++
++[rakugaki]
++[リンク生成します]
++
++
++fmsd[fmas]
+\ No newline at end of file
+Index: src/main/kotlin/ui/PageEditViewScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ui\n\nimport androidx.compose.desktop.ui.tooling.preview.Preview\nimport androidx.compose.foundation.border\nimport androidx.compose.foundation.clickable\nimport androidx.compose.foundation.layout.*\nimport androidx.compose.foundation.text.KeyboardOptions\nimport androidx.compose.material.Text\nimport androidx.compose.material.TextField\nimport androidx.compose.runtime.*\nimport androidx.compose.ui.Modifier\nimport androidx.compose.ui.graphics.Color\nimport androidx.compose.ui.text.input.ImeAction\nimport androidx.compose.ui.text.input.KeyboardCapitalization\nimport androidx.compose.ui.text.input.KeyboardType\nimport androidx.compose.ui.unit.dp\nimport androidx.compose.ui.window.WindowState\nimport androidx.compose.ui.window.singleWindowApplication\nimport data.PageRepository\nimport model.Line\nimport model.Page\nimport model.SubString\n\n@Composable\nfun PageEditViewScreen(link: String, windowController: WindowController = WindowController()) {\n    var page by remember { mutableStateOf(PageRepository.findByLink(link)) }\n\n    Row(\n        modifier = Modifier.fillMaxSize()\n    ) {\n        PageViewScreen(page, modifier = Modifier.weight(1f),windowController)\n        PageEditScreen(\n            onValueChange = {\n                run {\n                    page = page.editAllLineByEntireString(it)\n                    println(page)\n                }\n            },\n            onTitleChange = { page = page.editTitle(it) },\n            modifier = Modifier.weight(1f),\n            initText = page.plainValue()\n        )\n    }\n}\n\n@Composable\nprivate fun PageEditScreen(\n    onValueChange: (String) -> Unit = {},\n    onTitleChange: (String) -> Unit = {},\n    modifier: Modifier = Modifier,\n    initText:String = \"\"\n) {\n    var textFieldString by remember {\n        mutableStateOf(initText)\n    }\n    TextField(\n        value = textFieldString,\n        placeholder = { Text(text = \"textbox\") },\n        onValueChange = {\n            textFieldString = it\n            onValueChange(it)\n        },\n        keyboardOptions = KeyboardOptions(\n            capitalization = KeyboardCapitalization.None,\n            autoCorrect = true,\n            keyboardType = KeyboardType.Text,\n            imeAction = ImeAction.Next\n        ),\n        modifier = modifier.then(Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight()) // ここを修正\n    )\n}\n\n@Composable\nfun PageViewScreen(\n    page: Page,\n    modifier: Modifier = Modifier,\n    windowController: WindowController = WindowController()\n) {\n    Column(modifier = modifier) { // ここでmodifierを追加\n        page.getLines().forEach { it ->\n            Line(it, windowController)\n        }\n    }\n}\n\n@Composable\nprivate fun Line(line: Line, windowController: WindowController) {\n    val subStrings: List<SubString> = line.dividedStringsByLinks()\n    Row {\n        subStrings.forEach {\n            if (it.isLinkText)\n                Text(it.text, modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })\n            else\n                Text(it.text)\n        }\n    }\n}\n\n\n@Composable\n@Preview\nfun PageEditViewScreenPreviewPreview() {\n    PageEditViewScreen(\"hoge\")\n}\n\n@Composable\n@Preview\nfun PageEditScreenPreview() {\n\n}\n\n\nfun main() {\n    singleWindowApplication(title = \"testPageEditViewScreen\", state = WindowState(width = 1000.dp, height = 1000.dp)) {\n        PageEditViewScreen(\"firstMemo\")\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/ui/PageEditViewScreen.kt b/src/main/kotlin/ui/PageEditViewScreen.kt
+--- a/src/main/kotlin/ui/PageEditViewScreen.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/src/main/kotlin/ui/PageEditViewScreen.kt	(date 1694440708559)
+@@ -10,9 +10,11 @@
+ import androidx.compose.runtime.*
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.graphics.Color
++import androidx.compose.ui.text.font.FontWeight
+ import androidx.compose.ui.text.input.ImeAction
+ import androidx.compose.ui.text.input.KeyboardCapitalization
+ import androidx.compose.ui.text.input.KeyboardType
++import androidx.compose.ui.text.style.TextDecoration
+ import androidx.compose.ui.unit.dp
+ import androidx.compose.ui.window.WindowState
+ import androidx.compose.ui.window.singleWindowApplication
+@@ -89,7 +91,11 @@
+     Row {
+         subStrings.forEach {
+             if (it.isLinkText)
+-                Text(it.text, modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })
++                Text(it.text,
++                    color = Color.Blue,
++                    fontWeight = FontWeight.Bold, // 太字
++                    textDecoration = TextDecoration.Underline, // アンダーライン
++                    modifier = Modifier.clickable { windowController.openNewPageWindow(it.text) })
+             else
+                 Text(it.text)
+         }
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"AutoImportSettings\">\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\n  </component>\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"eb368a1a-d586-4a48-b882-4f6b3023de4a\" name=\"変更\" comment=\"main page clickable\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/localfiles/firstMemo.txt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/localfiles/firstMemo.txt\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"ChangesViewManager\">\n    <option name=\"groupingKeys\">\n      <option value=\"directory\" />\n      <option value=\"module\" />\n    </option>\n  </component>\n  <component name=\"ExternalProjectsData\">\n    <projectState path=\"$PROJECT_DIR$\">\n      <ProjectState />\n    </projectState>\n  </component>\n  <component name=\"ExternalProjectsManager\">\n    <system id=\"GRADLE\">\n      <state>\n        <task path=\"$PROJECT_DIR$\">\n          <activation />\n        </task>\n        <projects_view />\n      </state>\n    </system>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\n      <map>\n        <entry key=\"$PROJECT_DIR$\" value=\"#006_kozaka_main_screen\" />\n      </map>\n    </option>\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitHubPullRequestSearchHistory\">{\n  &quot;lastFilter&quot;: {\n    &quot;state&quot;: &quot;OPEN&quot;,\n    &quot;assignee&quot;: &quot;kozaka-utokyo&quot;\n  }\n}</component>\n  <component name=\"GithubPullRequestsUISettings\">\n    <option name=\"selectedUrlAndAccountId\">\n      <UrlAndAccount>\n        <option name=\"accountId\" value=\"46f403c9-7f00-4a58-b674-3d8bc603e36b\" />\n        <option name=\"url\" value=\"https://github.com/kozaka-utokyo/ixma.git\" />\n      </UrlAndAccount>\n    </option>\n  </component>\n  <component name=\"KotlinScriptingSettings\">\n    <scriptDefinition className=\"org.jetbrains.kotlin.scripting.resolve.KotlinScriptDefinitionFromAnnotatedTemplate\" definitionName=\"KotlinBuildScript\">\n      <order>2147483647</order>\n      <autoReloadConfigurations>true</autoReloadConfigurations>\n    </scriptDefinition>\n    <scriptDefinition className=\"org.jetbrains.kotlin.scripting.resolve.KotlinScriptDefinitionFromAnnotatedTemplate\" definitionName=\"KotlinSettingsScript\">\n      <order>2147483647</order>\n      <autoReloadConfigurations>true</autoReloadConfigurations>\n    </scriptDefinition>\n  </component>\n  <component name=\"ProjectColorInfo\">{\n  &quot;associatedIndex&quot;: 8\n}</component>\n  <component name=\"ProjectId\" id=\"2UVc3FfoFqD7RYiXvgK6jmGzPcc\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\">\n    <OptionsSetting value=\"false\" id=\"Update\" />\n  </component>\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\"><![CDATA[{\n  \"keyToString\": {\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\n    \"RunOnceActivity.OpenProjectViewOnStart\": \"true\",\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\n    \"WebServerToolWindowFactoryState\": \"false\",\n    \"git-widget-placeholder\": \"master\",\n    \"last_opened_file_path\": \"C:/Users/Takao1061/Desktop/ixma/localfiles\",\n    \"node.js.detected.package.eslint\": \"true\",\n    \"node.js.detected.package.tslint\": \"true\",\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\n    \"nodejs_package_manager_path\": \"npm\",\n    \"vue.rearranger.settings.migration\": \"true\"\n  }\n}]]></component>\n  <component name=\"RecentsManager\">\n    <key name=\"CopyFile.RECENT_KEYS\">\n      <recent name=\"C:\\Users\\Takao1061\\Desktop\\ixma\\localfiles\" />\n      <recent name=\"C:\\Users\\Takao1061\\Desktop\\ixma\\src\\main\\kotlin\" />\n      <recent name=\"C:\\Users\\Takao1061\\Desktop\\ixma\" />\n    </key>\n    <key name=\"MoveFile.RECENT_KEYS\">\n      <recent name=\"C:\\Users\\Takao1061\\Desktop\\ixma\" />\n      <recent name=\"C:\\Users\\Takao1061\\Desktop\\ixma\\src\\main\\kotlin\" />\n    </key>\n  </component>\n  <component name=\"RunManager\" selected=\"Kotlin.PageEditViewScreenKt\">\n    <configuration name=\"PageTest\" type=\"GradleRunConfiguration\" factoryName=\"Gradle\" temporary=\"true\">\n      <ExternalSystemSettings>\n        <option name=\"executionName\" />\n        <option name=\"externalProjectPath\" value=\"$PROJECT_DIR$\" />\n        <option name=\"externalSystemIdString\" value=\"GRADLE\" />\n        <option name=\"scriptParameters\" value=\"\" />\n        <option name=\"taskDescriptions\">\n          <list />\n        </option>\n        <option name=\"taskNames\">\n          <list>\n            <option value=\":test\" />\n            <option value=\"--tests\" />\n            <option value=\"&quot;model.PageTest&quot;\" />\n          </list>\n        </option>\n        <option name=\"vmOptions\" />\n      </ExternalSystemSettings>\n      <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>\n      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>\n      <DebugAllEnabled>false</DebugAllEnabled>\n      <RunAsTest>true</RunAsTest>\n      <method v=\"2\" />\n    </configuration>\n    <configuration name=\"FunctionKt\" type=\"JetRunConfigurationType\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"FunctionKt\" />\n      <module name=\"ixma.main\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration name=\"MainKt\" type=\"JetRunConfigurationType\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"MainKt\" />\n      <module name=\"ixma.main\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration name=\"PageEditViewScreenKt\" type=\"JetRunConfigurationType\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"ui.PageEditViewScreenKt\" />\n      <module name=\"ixma.main\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration name=\"TempKt\" type=\"JetRunConfigurationType\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"TempKt\" />\n      <module name=\"ixma.main\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration default=\"true\" type=\"JetRunConfigurationType\">\n      <module name=\"ixma.main\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <configuration default=\"true\" type=\"KotlinStandaloneScriptRunConfigurationType\">\n      <module name=\"ixma.main\" />\n      <option name=\"filePath\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Kotlin.PageEditViewScreenKt\" />\n        <item itemvalue=\"Kotlin.MainKt\" />\n        <item itemvalue=\"Kotlin.FunctionKt\" />\n        <item itemvalue=\"Kotlin.TempKt\" />\n        <item itemvalue=\"Gradle.PageTest\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"アプリケーションレベル\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"StandaloneScriptsStorage\">\n    <option name=\"files\">\n      <set>\n        <option value=\"$PROJECT_DIR$/build.gradle.kts\" />\n        <option value=\"$PROJECT_DIR$/settings.gradle.kts\" />\n      </set>\n    </option>\n  </component>\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"デフォルトタスク\">\n      <changelist id=\"eb368a1a-d586-4a48-b882-4f6b3023de4a\" name=\"変更\" comment=\"\" />\n      <created>1693027990704</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1693027990704</updated>\n      <workItem from=\"1693027991710\" duration=\"5907000\" />\n      <workItem from=\"1693036829074\" duration=\"1017000\" />\n      <workItem from=\"1693038242847\" duration=\"418000\" />\n      <workItem from=\"1693044752657\" duration=\"1846000\" />\n      <workItem from=\"1693490127104\" duration=\"4102000\" />\n      <workItem from=\"1693497542403\" duration=\"689000\" />\n      <workItem from=\"1693509424774\" duration=\"1737000\" />\n      <workItem from=\"1693511405435\" duration=\"1431000\" />\n      <workItem from=\"1693563332858\" duration=\"4091000\" />\n      <workItem from=\"1693569482516\" duration=\"4536000\" />\n      <workItem from=\"1693642011373\" duration=\"2284000\" />\n      <workItem from=\"1693644343749\" duration=\"280000\" />\n      <workItem from=\"1693644659658\" duration=\"666000\" />\n      <workItem from=\"1693645369708\" duration=\"1000000\" />\n      <workItem from=\"1693646961917\" duration=\"964000\" />\n      <workItem from=\"1693650171532\" duration=\"4000\" />\n      <workItem from=\"1693685296554\" duration=\"377000\" />\n      <workItem from=\"1693984496066\" duration=\"2464000\" />\n      <workItem from=\"1693995048523\" duration=\"1822000\" />\n      <workItem from=\"1694089495440\" duration=\"831000\" />\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"add main-f\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1693031796285</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1693031796285</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"add main-f\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1693046259963</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1693046259963</updated>\n    </task>\n    <task id=\"LOCAL-00003\" summary=\"add adm_fs\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1693046334987</created>\n      <option name=\"number\" value=\"00003\" />\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1693046334987</updated>\n    </task>\n    <task id=\"LOCAL-00004\" summary=\"add adm_fs\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1693647130454</created>\n      <option name=\"number\" value=\"00004\" />\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1693647130454</updated>\n    </task>\n    <task id=\"LOCAL-00005\" summary=\"whisper and gpt\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1693647611249</created>\n      <option name=\"number\" value=\"00005\" />\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1693647611249</updated>\n    </task>\n    <task id=\"LOCAL-00006\" summary=\"findAllLinks\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1694186537312</created>\n      <option name=\"number\" value=\"00006\" />\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1694186537312</updated>\n    </task>\n    <task id=\"LOCAL-00007\" summary=\"main page clickable\">\n      <option name=\"closed\" value=\"true\" />\n      <created>1694190638318</created>\n      <option name=\"number\" value=\"00007\" />\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1694190638320</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"8\" />\n    <servers />\n  </component>\n  <component name=\"TypeScriptGeneratedFilesManager\">\n    <option name=\"version\" value=\"3\" />\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"add main-f\" />\n    <MESSAGE value=\"add adm_fs\" />\n    <MESSAGE value=\"whisper and gpt\" />\n    <MESSAGE value=\"findAllLinks\" />\n    <MESSAGE value=\"main page clickable\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"main page clickable\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/.idea/workspace.xml	(date 1694440708534)
+@@ -4,10 +4,15 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="main page clickable">
++    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="add adm_fs">
++      <change afterPath="$PROJECT_DIR$/src/main/kotlin/model/Page.kt" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/src/test/kotlin/model/PageTest.kt" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo.txt" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/gradlew.bat" beforeDir="false" afterPath="$PROJECT_DIR$/gradlew.bat" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -36,11 +41,6 @@
+     </system>
+   </component>
+   <component name="Git.Settings">
+-    <option name="RECENT_BRANCH_BY_REPOSITORY">
+-      <map>
+-        <entry key="$PROJECT_DIR$" value="#006_kozaka_main_screen" />
+-      </map>
+-    </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+   </component>
+   <component name="GitHubPullRequestSearchHistory">{
+@@ -57,56 +57,39 @@
+       </UrlAndAccount>
+     </option>
+   </component>
+-  <component name="KotlinScriptingSettings">
+-    <scriptDefinition className="org.jetbrains.kotlin.scripting.resolve.KotlinScriptDefinitionFromAnnotatedTemplate" definitionName="KotlinBuildScript">
+-      <order>2147483647</order>
+-      <autoReloadConfigurations>true</autoReloadConfigurations>
+-    </scriptDefinition>
+-    <scriptDefinition className="org.jetbrains.kotlin.scripting.resolve.KotlinScriptDefinitionFromAnnotatedTemplate" definitionName="KotlinSettingsScript">
+-      <order>2147483647</order>
+-      <autoReloadConfigurations>true</autoReloadConfigurations>
+-    </scriptDefinition>
+-  </component>
+   <component name="ProjectColorInfo">{
+   &quot;associatedIndex&quot;: 8
+ }</component>
+   <component name="ProjectId" id="2UVc3FfoFqD7RYiXvgK6jmGzPcc" />
+-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+-    <OptionsSetting value="false" id="Update" />
+-  </component>
++  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+   <component name="ProjectViewState">
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent"><![CDATA[{
+-  "keyToString": {
+-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "RunOnceActivity.OpenProjectViewOnStart": "true",
+-    "RunOnceActivity.ShowReadmeOnStart": "true",
+-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+-    "WebServerToolWindowFactoryState": "false",
+-    "git-widget-placeholder": "master",
+-    "last_opened_file_path": "C:/Users/Takao1061/Desktop/ixma/localfiles",
+-    "node.js.detected.package.eslint": "true",
+-    "node.js.detected.package.tslint": "true",
+-    "node.js.selected.package.eslint": "(autodetect)",
+-    "node.js.selected.package.tslint": "(autodetect)",
+-    "nodejs_package_manager_path": "npm",
+-    "vue.rearranger.settings.migration": "true"
++  <component name="PropertiesComponent">{
++  &quot;keyToString&quot;: {
++    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
++    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
++    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
++    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
++    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
++    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma&quot;,
++    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
++    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
++    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
++    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
++    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
++    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+   }
+-}]]></component>
++}</component>
+   <component name="RecentsManager">
+-    <key name="CopyFile.RECENT_KEYS">
+-      <recent name="C:\Users\Takao1061\Desktop\ixma\localfiles" />
+-      <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
+-      <recent name="C:\Users\Takao1061\Desktop\ixma" />
+-    </key>
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="C:\Users\Takao1061\Desktop\ixma" />
+       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
+     </key>
+   </component>
+-  <component name="RunManager" selected="Kotlin.PageEditViewScreenKt">
++  <component name="RunManager" selected="Gradle.PageTest">
+     <configuration name="PageTest" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+       <ExternalSystemSettings>
+         <option name="executionName" />
+@@ -131,29 +114,8 @@
+       <RunAsTest>true</RunAsTest>
+       <method v="2" />
+     </configuration>
+-    <configuration name="FunctionKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+-      <option name="MAIN_CLASS_NAME" value="FunctionKt" />
+-      <module name="ixma.main" />
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+     <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+       <option name="MAIN_CLASS_NAME" value="MainKt" />
+-      <module name="ixma.main" />
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+-    <configuration name="PageEditViewScreenKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+-      <option name="MAIN_CLASS_NAME" value="ui.PageEditViewScreenKt" />
+-      <module name="ixma.main" />
+-      <method v="2">
+-        <option name="Make" enabled="true" />
+-      </method>
+-    </configuration>
+-    <configuration name="TempKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+-      <option name="MAIN_CLASS_NAME" value="TempKt" />
+       <module name="ixma.main" />
+       <method v="2">
+         <option name="Make" enabled="true" />
+@@ -174,23 +136,12 @@
+     </configuration>
+     <recent_temporary>
+       <list>
+-        <item itemvalue="Kotlin.PageEditViewScreenKt" />
+-        <item itemvalue="Kotlin.MainKt" />
+-        <item itemvalue="Kotlin.FunctionKt" />
+-        <item itemvalue="Kotlin.TempKt" />
+         <item itemvalue="Gradle.PageTest" />
++        <item itemvalue="Kotlin.MainKt" />
+       </list>
+     </recent_temporary>
+   </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="アプリケーションレベル" UseSingleDictionary="true" transferred="true" />
+-  <component name="StandaloneScriptsStorage">
+-    <option name="files">
+-      <set>
+-        <option value="$PROJECT_DIR$/build.gradle.kts" />
+-        <option value="$PROJECT_DIR$/settings.gradle.kts" />
+-      </set>
+-    </option>
+-  </component>
+   <component name="TaskManager">
+     <task active="true" id="Default" summary="デフォルトタスク">
+       <changelist id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="" />
+@@ -202,22 +153,6 @@
+       <workItem from="1693036829074" duration="1017000" />
+       <workItem from="1693038242847" duration="418000" />
+       <workItem from="1693044752657" duration="1846000" />
+-      <workItem from="1693490127104" duration="4102000" />
+-      <workItem from="1693497542403" duration="689000" />
+-      <workItem from="1693509424774" duration="1737000" />
+-      <workItem from="1693511405435" duration="1431000" />
+-      <workItem from="1693563332858" duration="4091000" />
+-      <workItem from="1693569482516" duration="4536000" />
+-      <workItem from="1693642011373" duration="2284000" />
+-      <workItem from="1693644343749" duration="280000" />
+-      <workItem from="1693644659658" duration="666000" />
+-      <workItem from="1693645369708" duration="1000000" />
+-      <workItem from="1693646961917" duration="964000" />
+-      <workItem from="1693650171532" duration="4000" />
+-      <workItem from="1693685296554" duration="377000" />
+-      <workItem from="1693984496066" duration="2464000" />
+-      <workItem from="1693995048523" duration="1822000" />
+-      <workItem from="1694089495440" duration="831000" />
+     </task>
+     <task id="LOCAL-00001" summary="add main-f">
+       <option name="closed" value="true" />
+@@ -243,39 +178,7 @@
+       <option name="project" value="LOCAL" />
+       <updated>1693046334987</updated>
+     </task>
+-    <task id="LOCAL-00004" summary="add adm_fs">
+-      <option name="closed" value="true" />
+-      <created>1693647130454</created>
+-      <option name="number" value="00004" />
+-      <option name="presentableId" value="LOCAL-00004" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1693647130454</updated>
+-    </task>
+-    <task id="LOCAL-00005" summary="whisper and gpt">
+-      <option name="closed" value="true" />
+-      <created>1693647611249</created>
+-      <option name="number" value="00005" />
+-      <option name="presentableId" value="LOCAL-00005" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1693647611249</updated>
+-    </task>
+-    <task id="LOCAL-00006" summary="findAllLinks">
+-      <option name="closed" value="true" />
+-      <created>1694186537312</created>
+-      <option name="number" value="00006" />
+-      <option name="presentableId" value="LOCAL-00006" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1694186537312</updated>
+-    </task>
+-    <task id="LOCAL-00007" summary="main page clickable">
+-      <option name="closed" value="true" />
+-      <created>1694190638318</created>
+-      <option name="number" value="00007" />
+-      <option name="presentableId" value="LOCAL-00007" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1694190638320</updated>
+-    </task>
+-    <option name="localTasksCounter" value="8" />
++    <option name="localTasksCounter" value="4" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -284,9 +187,6 @@
+   <component name="VcsManagerConfiguration">
+     <MESSAGE value="add main-f" />
+     <MESSAGE value="add adm_fs" />
+-    <MESSAGE value="whisper and gpt" />
+-    <MESSAGE value="findAllLinks" />
+-    <MESSAGE value="main page clickable" />
+-    <option name="LAST_COMMIT_MESSAGE" value="main page clickable" />
++    <option name="LAST_COMMIT_MESSAGE" value="add adm_fs" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: src/main/kotlin/InitialScreen.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import androidx.compose.runtime.Composable\n\n@Composable\nfun InitialScreen(){\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/kotlin/InitialScreen.kt b/src/main/kotlin/InitialScreen.kt
+--- a/src/main/kotlin/InitialScreen.kt	(revision 9116a34455962cc7fa388bc6a4ba40e06e698ed6)
++++ b/src/main/kotlin/InitialScreen.kt	(date 1694440708547)
+@@ -1,6 +1,50 @@
++import androidx.compose.foundation.background
++import androidx.compose.foundation.clickable
++import androidx.compose.foundation.layout.*
++import androidx.compose.foundation.lazy.LazyColumn
++import androidx.compose.foundation.lazy.items
++import androidx.compose.material.Button
++import androidx.compose.material.Text
+ import androidx.compose.runtime.Composable
++import androidx.compose.runtime.getValue
++import androidx.compose.runtime.mutableStateOf
++import androidx.compose.runtime.remember
++import androidx.compose.ui.Modifier
++import androidx.compose.ui.graphics.Color
++import androidx.compose.ui.unit.dp
++import data.PageRepository
++import androidx.compose.material.Button
++import androidx.compose.material.Text
++import androidx.compose.ui.window.Window
++import androidx.compose.ui.window.application
++import ui.RenderWindows
++import ui.WindowController
++import androidx.compose.ui.text.style.TextDecoration
++import androidx.compose.ui.text.font.FontWeight
+ 
+ @Composable
+-fun InitialScreen(){
++fun InitialScreen(windowController: WindowController){
++    val pages by remember { mutableStateOf(PageRepository.findAllLinks()) }
+ 
++    Column(
++        modifier = Modifier.fillMaxSize().background(Color.White),
++        verticalArrangement = Arrangement.SpaceBetween
++    ) {
++        Button(onClick = { windowController.openNewPageWindow("firstMemo") }) {
++            Text("Open FirstMemo")
++        }
++        LazyColumn(modifier = Modifier.weight(1f)) {
++            items(pages) { page ->
++                Text(text = page.link,
++                    color = Color.Blue,
++                    fontWeight = FontWeight.Bold, // 太字
++                    textDecoration = TextDecoration.Underline, // アンダーライン
++                    modifier = Modifier.clickable {
++                    // ここでクリックされたときの処理を書く
++                    windowController.openNewPageWindow("${page.link}")
++                }.padding(8.dp))
++            }
++        }
++        Spacer(modifier = Modifier.height(16.dp)) // Optional: You can add a spacer for better spacing
++    }
+ }
+\ No newline at end of file
