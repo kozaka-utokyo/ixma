@@ -1,2 +1,4 @@
 this is your first memo
-go to [seco]
+
+go to [second page]
+

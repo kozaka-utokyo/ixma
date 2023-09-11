@@ -1,6 +1,7 @@
 package ui
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -28,9 +29,9 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
 
     Row(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(Color.Gray)  // 背景色を灰色に設定
     ) {
-        PageViewScreen(page, modifier = Modifier.weight(1f),windowController)
+        PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.Gray),windowController)  // 背景色を灰色に設定
         PageEditScreen(
             onValueChange = {
                 run {
@@ -68,7 +69,7 @@ private fun PageEditScreen(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
         ),
-        modifier = modifier.then(Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight()) // ここを修正
+        modifier = modifier.then(Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight().background(Color.Gray)) // 背景色を灰色に設定
     )
 }
 
@@ -78,7 +79,7 @@ fun PageViewScreen(
     modifier: Modifier = Modifier,
     windowController: WindowController = WindowController()
 ) {
-    Column(modifier = modifier) { // ここでmodifierを追加
+    Column(modifier = modifier.background(Color.Gray)) { // 背景色を灰色に設定
         page.getLines().forEach { it ->
             Line(it, windowController)
         }

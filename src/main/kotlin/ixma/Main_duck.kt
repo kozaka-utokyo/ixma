@@ -14,6 +14,5 @@ fun main() = singleWindowApplication {
         contentDescription = "Sample",
         modifier = Modifier.fillMaxSize()
     )
-
 }
 

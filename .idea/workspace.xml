@@ -4,21 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="link click">
-      <change afterPath="$PROJECT_DIR$/localfiles/new.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="ファイル整理">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo2.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo3.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/localfiles/firstMemo4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo4.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo5.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/secondMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/secondMemo.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/WindowsManageableSample.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/data.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/edit.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/function.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/output.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/temp.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/test.mp3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ixma/Main_duck.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ixma/Main_duck.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,26 +87,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Takao1061/Desktop/ixma/localfiles",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "プロジェクト",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma/localfiles&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;プロジェクト&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Takao1061\Desktop\ixma\localfiles" />
@@ -218,7 +216,9 @@
       <workItem from="1694205185383" duration="8844000" />
       <workItem from="1694214612136" duration="625000" />
       <workItem from="1694215329322" duration="1936000" />
-      <workItem from="1694217521285" duration="760000" />
+      <workItem from="1694217521285" duration="7684000" />
+      <workItem from="1694361354520" duration="2365000" />
+      <workItem from="1694446160130" duration="1937000" />
     </task>
     <task id="LOCAL-00001" summary="add main-f">
       <option name="closed" value="true" />
@@ -292,7 +292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694213031747</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="ファイル整理">
+      <option name="closed" value="true" />
+      <created>1694218300825</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1694218300825</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -303,7 +311,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -317,6 +337,7 @@
     <MESSAGE value="main page clickable" />
     <MESSAGE value="50%Modifier" />
     <MESSAGE value="link click" />
-    <option name="LAST_COMMIT_MESSAGE" value="link click" />
+    <MESSAGE value="ファイル整理" />
+    <option name="LAST_COMMIT_MESSAGE" value="ファイル整理" />
   </component>
 </project>

@@ -84,7 +84,3 @@ suspend fun gpt() {
 //    }
 //    println(response)
 //}
-
-//suspend fun main(){
-//    whisper()
-//}
