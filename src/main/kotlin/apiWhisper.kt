@@ -60,39 +60,12 @@ class Recorder {
     }
 }
 
-@Composable
-fun recordingApp() {
-    var isRecording by remember { mutableStateOf(false) }
-    val recorder = Recorder()
 
-    Window(onCloseRequest = { exitProcess(0) }) {
-        Column {
-            if (!isRecording) {
-                Button(onClick = {
-                    isRecording = true
-                    recorder.startRecording()
-                }) {
-                    Text("Start Recording")
-                }
-            } else {
-                Button(onClick = {
-                    isRecording = false
-                    recorder.stopRecording("output.wav")
-                    runBlocking {
-                        whisper()
-                    }
-                }) {
-                    Text("Stop Recording and Transcribe")
-                }
-            }
-        }
-    }
-}
 fun readApiKeyFromFile(filename: String): String {
     return File(filename).readText().trim()
 }
 
-fun whisper() = runBlocking {
+fun recordByWhisper() : String = runBlocking {
     val client = HttpClient(CIO) {
         install(JsonFeature) {
             serializer = KotlinxSerializer()
@@ -125,9 +98,44 @@ fun whisper() = runBlocking {
                 ByteReadPacket(file.readBytes())
             }
             append("model", "whisper-1")
+            append("language", "ja")
         })
     }
-    println(response)
+    return@runBlocking response // 結果を返す
+}
+
+@Composable
+fun recordingApp() {
+    var isRecording by remember { mutableStateOf(false) }
+    var transcriptionResult by remember { mutableStateOf<String?>(null) } // 結果を表示するための変数
+    val recorder = Recorder()
+
+    Window(onCloseRequest = { exitProcess(0) }) {
+        Column {
+            if (!isRecording) {
+                Button(onClick = {
+                    isRecording = true
+                    recorder.startRecording()
+                }) {
+                    Text("Start Recording")
+                }
+            } else {
+                Button(onClick = {
+                    isRecording = false
+                    recorder.stopRecording("output.wav")
+                    runBlocking {
+                        transcriptionResult = recordByWhisper() // 結果を取得
+                    }
+                }) {
+                    Text("Stop Recording and Transcribe")
+                }
+            }
+            // 結果を表示
+            transcriptionResult?.let {
+                Text("Transcription: $it")
+            }
+        }
+    }
 }
 
 fun main() {

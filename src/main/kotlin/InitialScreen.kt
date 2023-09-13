@@ -31,6 +31,7 @@ fun InitialScreen(windowController: WindowController){
         modifier = Modifier.fillMaxSize().background(Color.White),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        recordingApp()
         Button(onClick = { windowController.openNewPageWindow("firstMemo") }) {
             Text("Open FirstMemo")
         }
