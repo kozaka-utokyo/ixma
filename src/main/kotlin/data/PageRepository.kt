@@ -49,7 +49,7 @@ object PageRepository {
     }
 
     fun isExistLink(link: String): Boolean {
-        //TODO エラーハンドリングする
+        //TODO エラーハンドリングするjava
         val directoryPath = this.directory()
         val fileName = "$link.txt" // チェックしたいファイル名
 
@@ -99,6 +99,21 @@ object PageRepository {
         } else {
             println("指定したファイルが存在しないかファイルではありません。")
         }
+    }
+    fun findPagesBySubString(substring: String):List<Page>{
+        val pages = mutableListOf<Page>()
+        val directory = File(directory())
+
+        directory.walk().forEach {
+            if (it.isFile && it.extension == "txt") {
+                val link = it.nameWithoutExtension
+                val page = findByLink(link)
+                if (page.plainValue().contains(substring)) {
+                    pages.add(page)
+                }
+            }
+        }
+        return pages
     }
 
     private fun directory(): String {

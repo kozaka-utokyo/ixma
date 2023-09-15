@@ -1,7 +1,7 @@
 package model
 
 import data.PageRepository
-
+import model.Node
 
 data class Page(
     val link: String,

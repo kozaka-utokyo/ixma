@@ -20,9 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowState
 import androidx.compose.ui.window.singleWindowApplication
 import data.PageRepository
-import model.Line
-import model.Page
-import model.SubString
+import model.*
 
 @Composable
 fun PageEditViewScreen(link: String, windowController: WindowController = WindowController()) {
@@ -31,7 +29,11 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
     Row(
         modifier = Modifier.fillMaxSize().background(Color.Gray)  // 背景色を灰色に設定
     ) {
-        PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.Gray),windowController)  // 背景色を灰色に設定
+        Column() {
+            PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.Gray), windowController)  // 背景色を灰色に設定
+            RelatedMemosScreen(link, windowController)
+        }
+
         PageEditScreen(
             onValueChange = {
                 run {
@@ -51,7 +53,7 @@ private fun PageEditScreen(
     onValueChange: (String) -> Unit = {},
     onTitleChange: (String) -> Unit = {},
     modifier: Modifier = Modifier,
-    initText:String = ""
+    initText: String = ""
 ) {
     var textFieldString by remember {
         mutableStateOf(initText)
@@ -69,7 +71,9 @@ private fun PageEditScreen(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Next
         ),
-        modifier = modifier.then(Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight().background(Color.Gray)) // 背景色を灰色に設定
+        modifier = modifier.then(
+            Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight().background(Color.Gray)
+        ) // 背景色を灰色に設定
     )
 }
 
@@ -81,13 +85,13 @@ fun PageViewScreen(
 ) {
     Column(modifier = modifier.background(Color.Gray)) { // 背景色を灰色に設定
         page.getLines().forEach { it ->
-            Line(it, windowController)
+            LineUiComponent(it, windowController)
         }
     }
 }
 
 @Composable
-private fun Line(line: Line, windowController: WindowController) {
+private fun LineUiComponent(line: Line, windowController: WindowController) {
     val subStrings: List<SubString> = line.dividedStringsByLinks()
     Row {
         subStrings.forEach {
@@ -100,6 +104,24 @@ private fun Line(line: Line, windowController: WindowController) {
             else
                 Text(it.text)
         }
+    }
+}
+
+@Composable
+fun RelatedMemosScreen(link: String, windowController: WindowController) {
+    val pages = PageRepository.findPagesBySubString(link)
+    for (page in pages) {
+        val root = buildTree(page.plainValue().split("\n"))
+        val nodes = findNodesContainingWord(root, link)
+        Text("from:${page.link}")
+        for (node in nodes) {
+            node.concatenateLines().forEach {
+                LineUiComponent(it, windowController)
+            }
+            Spacer(Modifier.padding(16.dp))
+        }
+
+
     }
 }
 
@@ -119,6 +141,7 @@ fun PageEditScreenPreview() {
 
 fun main() {
     singleWindowApplication(title = "testPageEditViewScreen", state = WindowState(width = 1000.dp, height = 1000.dp)) {
-        PageEditViewScreen("firstMemo")
+        //PageEditViewScreen("firstMemo")
+        //RelatedMemosScreen("うどん")
     }
 }
