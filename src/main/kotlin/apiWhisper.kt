@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream
 import kotlin.system.exitProcess
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
+import data.PageRepository
 import java.io.File
 import io.ktor.client.engine.cio.*
 import io.ktor.client.request.*
@@ -17,6 +18,10 @@ import io.ktor.client.features.logging.*
 import io.ktor.client.request.forms.*
 import io.ktor.utils.io.core.*
 import kotlinx.coroutines.runBlocking
+import model.Page
+import ui.WindowController
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class Recorder {
 
@@ -105,7 +110,7 @@ fun recordByWhisper() : String = runBlocking {
 }
 
 @Composable
-fun recordingApp() {
+fun recordingApp(windowController: WindowController= WindowController()) {
     var isRecording by remember { mutableStateOf(false) }
     var transcriptionResult by remember { mutableStateOf<String?>(null) } // 結果を表示するための変数
     val recorder = Recorder()
@@ -125,7 +130,12 @@ fun recordingApp() {
                     recorder.stopRecording("output.wav")
                     runBlocking {
                         transcriptionResult = recordByWhisper() // 結果を取得
+                        var page = Page(link= LocalDate.now().toString(), lines = listOf())
+                        transcriptionResult?.let { page = page.editAllLineByEntireString(it) }
+                        PageRepository.restorePage(page)
+                        windowController.openNewPageWindow(page.link)
                     }
+
                 }) {
                     Text("Stop Recording and Transcribe")
                 }
