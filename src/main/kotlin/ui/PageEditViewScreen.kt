@@ -29,7 +29,7 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
     Row(
         modifier = Modifier.fillMaxSize().background(Color.Gray)  // 背景色を灰色に設定
     ) {
-        Column() {
+        Column(Modifier.weight(1f)) {
             PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.Gray), windowController)  // 背景色を灰色に設定
             RelatedMemosScreen(link, windowController)
         }
