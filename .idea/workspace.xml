@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="main　画像追加">
-      <change afterPath="$PROJECT_DIR$/src/main/kotlin/apiWhisperCoR.kt" afterDir="false" />
+    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="api修正">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo6.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo6.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/apiGPT.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/recorder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/apiWhisper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/apiWhisper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/apiWhisper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,26 +79,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Takao1061/Desktop/ixma/src/main/kotlin",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "プロジェクト",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma/src/main/kotlin&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;ファセット&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
@@ -162,10 +162,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.WindowsManageableSampleKt" />
         <item itemvalue="Kotlin.PageEditViewScreenKt" />
-        <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.TempKt" />
       </list>
     </recent_temporary>
@@ -213,7 +213,10 @@
       <workItem from="1694361354520" duration="2365000" />
       <workItem from="1694446160130" duration="1937000" />
       <workItem from="1694450388775" duration="1337000" />
-      <workItem from="1694599868965" duration="5527000" />
+      <workItem from="1694599868965" duration="5975000" />
+      <workItem from="1694748642133" duration="394000" />
+      <workItem from="1694786792760" duration="2452000" />
+      <workItem from="1694968292597" duration="1112000" />
     </task>
     <task id="LOCAL-00001" summary="add main-f">
       <option name="closed" value="true" />
@@ -303,7 +306,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694450572882</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="api修正">
+      <option name="closed" value="true" />
+      <created>1694607501739</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1694607501739</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -342,7 +353,8 @@
     <MESSAGE value="link click" />
     <MESSAGE value="ファイル整理" />
     <MESSAGE value="main　画像追加" />
-    <option name="LAST_COMMIT_MESSAGE" value="main　画像追加" />
+    <MESSAGE value="api修正" />
+    <option name="LAST_COMMIT_MESSAGE" value="api修正" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

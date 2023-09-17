@@ -22,6 +22,8 @@ import model.Page
 import ui.WindowController
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.util.Timer
+import kotlin.concurrent.schedule
 
 class Recorder {
 
@@ -31,6 +33,8 @@ class Recorder {
     private var targetDataLine: TargetDataLine? = null
 
     fun startRecording() {
+        byteArrayOutputStream.reset()  // ここで ByteArrayOutputStream をリセットしています。
+
         val dataLineInfo = DataLine.Info(TargetDataLine::class.java, audioFormat)
         targetDataLine = AudioSystem.getLine(dataLineInfo) as TargetDataLine?
         targetDataLine!!.open(audioFormat)
@@ -65,12 +69,11 @@ class Recorder {
     }
 }
 
-
 fun readApiKeyFromFile(filename: String): String {
     return File(filename).readText().trim()
 }
 
-fun recordByWhisper() : String = runBlocking {
+fun recordByWhisper(filename: String): String = runBlocking {
     val client = HttpClient(CIO) {
         install(JsonFeature) {
             serializer = KotlinxSerializer()
@@ -81,7 +84,10 @@ fun recordByWhisper() : String = runBlocking {
         }
     }
 
-    val file = File("output.wav") // ここをMP3からWAVに変更
+    val file = File(filename)
+    if (!file.exists()) {
+        return@runBlocking "$filename not found."
+    }
     val apiKey = readApiKeyFromFile("api_key.txt")
 
     val response = client.submitForm<String> {
@@ -96,7 +102,7 @@ fun recordByWhisper() : String = runBlocking {
             appendInput(
                 key = "file",
                 headers = Headers.build {
-                    append(HttpHeaders.ContentDisposition, "filename=output.wav") // ここもMP3からWAVに変更
+                    append(HttpHeaders.ContentDisposition, "filename=$filename")
                     append(HttpHeaders.ContentType, "audio/wav")
                 }
             ) {
@@ -106,21 +112,38 @@ fun recordByWhisper() : String = runBlocking {
             append("language", "ja")
         })
     }
-    return@runBlocking response // 結果を返す
+    return@runBlocking response
 }
 
 @Composable
 fun recordingApp(windowController: WindowController= WindowController()) {
     var isRecording by remember { mutableStateOf(false) }
-    var transcriptionResult by remember { mutableStateOf<String?>(null) } // 結果を表示するための変数
+    var transcriptionResults by remember { mutableStateOf<List<String>>(listOf()) }  // List<String> に変更
     val recorder = Recorder()
+    var fileCounter by remember { mutableStateOf(1) }
+    val filename = "output$fileCounter.wav"
+    val timer = Timer()
 
-    Window(onCloseRequest = { exitProcess(0) }) {
+    Window(onCloseRequest = {
+        timer.cancel()
+        exitProcess(0)
+    }) {
         Column {
             if (!isRecording) {
                 Button(onClick = {
                     isRecording = true
                     recorder.startRecording()
+                    timer.schedule(5000, 5000) {
+                        if (isRecording) {
+                            recorder.stopRecording(filename)
+                            recorder.startRecording()
+                            runBlocking {
+                                val newResult = recordByWhisper(filename)
+                                transcriptionResults = transcriptionResults + newResult  // 結果をリストに追加
+                            }
+                            fileCounter++
+                        }
+                    }
                 }) {
                     Text("Start Recording")
                 }
@@ -129,20 +152,24 @@ fun recordingApp(windowController: WindowController= WindowController()) {
                     isRecording = false
                     recorder.stopRecording("output.wav")
                     runBlocking {
-                        transcriptionResult = recordByWhisper() // 結果を取得
+                        val transcriptionResult = recordByWhisper(filename) // 結果を取得
                         var page = Page(link= LocalDate.now().toString(), lines = listOf())
                         transcriptionResult?.let { page = page.editAllLineByEntireString(it) }
                         PageRepository.restorePage(page)
                         windowController.openNewPageWindow(page.link)
                     }
 
+                    val filename = "output$fileCounter.wav"
+                    recorder.stopRecording(filename)
+                    timer.cancel()
                 }) {
                     Text("Stop Recording and Transcribe")
                 }
             }
-            // 結果を表示
-            transcriptionResult?.let {
-                Text("Transcription: $it")
+
+            // リストの内容を順番に表示
+            transcriptionResults.forEach { result ->
+                Text("Transcription: $result")
             }
         }
     }
