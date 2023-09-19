@@ -22,6 +22,7 @@ dependencies {
     // With compose.desktop.common you will also lose @Preview functionality
     implementation(compose.desktop.currentOs)
     implementation("junit:junit:4.13.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")  // バージョンは最新のものを使用してください
     implementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     val ktor_version = "1.6.0"
