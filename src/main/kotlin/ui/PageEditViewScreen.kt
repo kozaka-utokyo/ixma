@@ -27,10 +27,10 @@ fun PageEditViewScreen(link: String, windowController: WindowController = Window
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
 
     Row(
-        modifier = Modifier.fillMaxSize().background(Color.Gray)  // 背景色を灰色に設定
+        modifier = Modifier.fillMaxSize().background(Color.White)
     ) {
         Column(Modifier.weight(1f)) {
-            PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.Gray), windowController)  // 背景色を灰色に設定
+            PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.White), windowController)
             RelatedMemosScreen(link, windowController)
         }
 
@@ -72,8 +72,8 @@ private fun PageEditScreen(
             imeAction = ImeAction.Next
         ),
         modifier = modifier.then(
-            Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight().background(Color.Gray)
-        ) // 背景色を灰色に設定
+            Modifier.border(1.dp, Color.Black).padding(3.dp).fillMaxHeight().background(Color.White)
+        )
     )
 }
 
@@ -83,7 +83,7 @@ fun PageViewScreen(
     modifier: Modifier = Modifier,
     windowController: WindowController = WindowController()
 ) {
-    Column(modifier = modifier.background(Color.Gray)) { // 背景色を灰色に設定
+    Column(modifier = modifier.background(Color.White)) {
         page.getLines().forEach { it ->
             LineUiComponent(it, windowController)
         }
@@ -113,7 +113,9 @@ fun RelatedMemosScreen(link: String, windowController: WindowController) {
     for (page in pages) {
         val root = buildTree(page.plainValue().split("\n"))
         val nodes = findNodesContainingWord(root, link)
-        Text("from:${page.link}")
+        Text("from:${page.link}", modifier = Modifier.clickable { windowController.openNewPageWindow(page.link)},
+            color = Color.Blue
+        )
         for (node in nodes) {
             node.concatenateLines().forEach {
                 LineUiComponent(it, windowController)
