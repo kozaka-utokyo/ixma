@@ -55,6 +55,7 @@ fun InitialScreen(windowController: WindowController) {
         contentAlignment = Alignment.TopStart,
         //modifier = Modifier.padding( )
     ) {
+
         Column(
             modifier = Modifier.fillMaxSize().background(Color.White),
             verticalArrangement = Arrangement.SpaceBetween
@@ -188,6 +189,7 @@ fun InitialScreen(windowController: WindowController) {
                         }
                     }
                 }
+
             }
 
 

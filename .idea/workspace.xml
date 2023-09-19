@@ -4,19 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="ファイル整理">
+    <list default="true" id="eb368a1a-d586-4a48-b882-4f6b3023de4a" name="変更" comment="api修正">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo2.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo2.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo3.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo3.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo4.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo4.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo5.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo5.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/localfiles/secondMemo.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/secondMemo.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/localfiles/firstMemo6.txt" beforeDir="false" afterPath="$PROJECT_DIR$/localfiles/firstMemo6.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/function.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ixma/Main_duck.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ixma/Main_duck.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/ui/PageEditViewScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/kotlin/apiWhisper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/kotlin/apiWhisper.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,22 +87,23 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma/localfiles&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Takao1061/Desktop/ixma/src/main/kotlin&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;プロジェクト&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;ファセット&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Takao1061\Desktop\ixma\localfiles" />
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
+      <recent name="C:\Users\Takao1061\Desktop\ixma\localfiles" />
       <recent name="C:\Users\Takao1061\Desktop\ixma" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -118,7 +111,7 @@
       <recent name="C:\Users\Takao1061\Desktop\ixma\src\main\kotlin" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.MainKt">
+  <component name="RunManager">
     <configuration name="FunctionKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="FunctionKt" />
       <module name="ixma.main" />
@@ -169,10 +162,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.WindowsManageableSampleKt" />
         <item itemvalue="Kotlin.PageEditViewScreenKt" />
-        <item itemvalue="Kotlin.FunctionKt" />
         <item itemvalue="Kotlin.TempKt" />
       </list>
     </recent_temporary>
@@ -219,6 +212,11 @@
       <workItem from="1694217521285" duration="7684000" />
       <workItem from="1694361354520" duration="2365000" />
       <workItem from="1694446160130" duration="1937000" />
+      <workItem from="1694450388775" duration="1337000" />
+      <workItem from="1694599868965" duration="5975000" />
+      <workItem from="1694748642133" duration="394000" />
+      <workItem from="1694786792760" duration="2452000" />
+      <workItem from="1694968292597" duration="1112000" />
     </task>
     <task id="LOCAL-00001" summary="add main-f">
       <option name="closed" value="true" />
@@ -300,7 +298,23 @@
       <option name="project" value="LOCAL" />
       <updated>1694218300825</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="main　画像追加">
+      <option name="closed" value="true" />
+      <created>1694450572882</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1694450572882</updated>
+    </task>
+    <task id="LOCAL-00012" summary="api修正">
+      <option name="closed" value="true" />
+      <created>1694607501739</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1694607501739</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -338,6 +352,19 @@
     <MESSAGE value="50%Modifier" />
     <MESSAGE value="link click" />
     <MESSAGE value="ファイル整理" />
-    <option name="LAST_COMMIT_MESSAGE" value="ファイル整理" />
+    <MESSAGE value="main　画像追加" />
+    <MESSAGE value="api修正" />
+    <option name="LAST_COMMIT_MESSAGE" value="api修正" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="kotlin-line">
+          <url>file://$PROJECT_DIR$/src/main/kotlin/InitialScreen.kt</url>
+          <line>52</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
