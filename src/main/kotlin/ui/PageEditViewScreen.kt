@@ -30,7 +30,7 @@ import model.*
 fun PageEditViewScreen(link: String, windowController: WindowController = WindowController()) {
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
     Column (){
-        Text(page.link, fontSize = 16.sp, fontWeight = FontWeight.Bold,)
+        Text(page.link, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 8.dp))
         Row(
             modifier = Modifier.fillMaxSize().background(Color.White)
         ) {
@@ -89,7 +89,7 @@ fun PageViewScreen(
     modifier: Modifier = Modifier,
     windowController: WindowController = WindowController()
 ) {
-    Column(modifier = modifier.background(Color.White).padding(16.dp)) {
+    Column(modifier = modifier.background(Color.White).padding(8.dp)) {
         page.getLines().forEach { it ->
             LineUiComponent(it, windowController)
         }
@@ -116,7 +116,7 @@ private fun LineUiComponent(line: Line, windowController: WindowController) {
 @Composable
 fun RelatedMemosScreen(link: String, windowController: WindowController) {
     val pages = PageRepository.findPagesBySubString(link)
-    Column(modifier = Modifier) {
+    Column(modifier = Modifier.padding(8.dp)) {
         for (page in pages) {
             val root = buildTree(page.plainValue().split("\n"))
             val nodes = findNodesContainingWord(root, link)
@@ -127,9 +127,9 @@ fun RelatedMemosScreen(link: String, windowController: WindowController) {
             for (node in nodes) {
                 Card(
                     modifier = Modifier
-                        .padding(8.dp)
                         .wrapContentHeight()
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp),
                     elevation = 8.dp
                 ) {
                     Column {
