@@ -29,26 +29,28 @@ import model.*
 @Composable
 fun PageEditViewScreen(link: String, windowController: WindowController = WindowController()) {
     var page by remember { mutableStateOf(PageRepository.findByLink(link)) }
+    Column (){
+        Text(page.link, fontSize = 16.sp, fontWeight = FontWeight.Bold,)
+        Row(
+            modifier = Modifier.fillMaxSize().background(Color.White)
+        ) {
+            Column(Modifier.weight(1f)) {
+                PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.White), windowController)
+                RelatedMemosScreen(link, windowController)
+            }
 
-    Row(
-        modifier = Modifier.fillMaxSize().background(Color.White)
-    ) {
-        Column(Modifier.weight(1f)) {
-            PageViewScreen(page, modifier = Modifier.weight(1f).background(Color.White), windowController)
-            RelatedMemosScreen(link, windowController)
+            PageEditScreen(
+                onValueChange = {
+                    run {
+                        page = page.editAllLineByEntireString(it)
+                        println(page)
+                    }
+                },
+                onTitleChange = { page = page.editTitle(it) },
+                modifier = Modifier.weight(1f),
+                initText = page.plainValue()
+            )
         }
-
-        PageEditScreen(
-            onValueChange = {
-                run {
-                    page = page.editAllLineByEntireString(it)
-                    println(page)
-                }
-            },
-            onTitleChange = { page = page.editTitle(it) },
-            modifier = Modifier.weight(1f),
-            initText = page.plainValue()
-        )
     }
 }
 
@@ -87,9 +89,7 @@ fun PageViewScreen(
     modifier: Modifier = Modifier,
     windowController: WindowController = WindowController()
 ) {
-    Column(modifier = modifier.background(Color.White)) {
-        Text(page.link, fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(8.dp))
-        Spacer(Modifier.padding(8.dp))
+    Column(modifier = modifier.background(Color.White).padding(16.dp)) {
         page.getLines().forEach { it ->
             LineUiComponent(it, windowController)
         }
