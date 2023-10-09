@@ -315,7 +315,6 @@ fun TextBoxUI(
             modifier = Modifier.onKeyEvent {
                 event ->
                 if (event.key == Key(0x0a) ) { // 0x0A is the keycode for Enter
-                    print("Hello")
                     onAddButtonClick()
                     true
 
