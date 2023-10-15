@@ -29,7 +29,7 @@ import kotlinx.coroutines.runBlocking
 import java.awt.event.KeyEvent
 
 @Composable
-fun InitialScreen(windowController: WindowController) {
+fun InitialScreen_2(windowController: WindowController) {
     val pages by remember { mutableStateOf(PageRepository.findAllLinks()) }
     val coroutineScope = rememberCoroutineScope()
     var isRecording by remember { mutableStateOf(false) }
@@ -161,9 +161,9 @@ fun InitialScreen(windowController: WindowController) {
                             }
 
                         }
-                        val state = manageTextAndListState()
+                        val state = manageTextAndListState_2()
 
-                        TextBoxUI(state.textState, state.updateTextState, state.addText)
+                        TextBoxUI_2(state.textState, state.updateTextState, state.addText)
 
                         state.stringList.forEach { item ->
                             Text(item)
@@ -272,7 +272,7 @@ fun InitialScreen(windowController: WindowController) {
 
 }
 
-data class TextAndListState(
+data class TextAndListState_2(
     val textState: TextFieldValue,
     val stringList: List<String>,
     val updateTextState: (TextFieldValue) -> Unit,
@@ -281,7 +281,7 @@ data class TextAndListState(
 
 
 @Composable
-fun manageTextAndListState(): TextAndListState {
+fun manageTextAndListState_2(): TextAndListState {
 
     var textState by remember { mutableStateOf(TextFieldValue()) }
     var stringList by remember { mutableStateOf(listOf<String>()) }
@@ -302,7 +302,7 @@ fun manageTextAndListState(): TextAndListState {
 
 
 @Composable
-fun TextBoxUI(
+fun TextBoxUI_2(
     textState: TextFieldValue,
     onTextChange: (TextFieldValue) -> Unit,
     onAddButtonClick: () -> Unit
